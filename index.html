@@ -291,7 +291,15 @@
       font-size: 0.84rem;
       font-weight: 800;
       color: var(--texto-espresso);
+      margin-bottom: 4px;
+    }
+
+    .especial-sub {
+      display: block;
+      font-size: 0.73rem;
+      color: var(--texto-cacao);
       margin-bottom: 8px;
+      line-height: 1.25;
     }
 
     .especiales-grid {
@@ -804,11 +812,12 @@
   <div class="panel" id="seccion-crepas">
     <div class="titulo-seccion">🥞 ARMA TU CREPA (TACHA TUS OPCIONES)</div>
     <p class="nota-guia">
-      👆 Toca los cuadritos para marcar tu crepa, Bowl Crepa o Waffle
+      👆 Toca los cuadritos para marcar tu crepa, Bowl Crepa o Waffle y sus ingredientes dulces
     </p>
 
     <div class="especiales-crepa-box">
       <span class="especial-titulo">🥣🧇 Opciones Bowl Crepa y Waffle:</span>
+      <span class="especial-sub">También puedes combinarlos con los ingredientes dulces de abajo (untable, fruta, topping, extras y baño).</span>
       <div class="especiales-grid">
         <label class="check-item especial-item">
           <input type="checkbox" class="especial-base" value="Bowl Crepa" data-precio="75">
@@ -1084,6 +1093,43 @@
     return Array.from(document.querySelectorAll(selector + ':checked')).map(el => el.value);
   }
 
+  function construirDetalleDulce(etiquetaBase, precioBase, untables, frutas, toppings, kinder, helado, banos) {
+    const toppingsExtraCount = Math.max(0, toppings.length - 1);
+    const costoToppingsExtra = toppingsExtraCount * 5;
+    const costoKinder = kinder ? 17 : 0;
+    const costoHelado = helado ? 17 : 0;
+    const subtotal = precioBase + costoToppingsExtra + costoKinder + costoHelado;
+
+    let detalles = [`  • Base: ${etiquetaBase}`];
+    if (untables.length) detalles.push(`  • Untable: ${untables.join(" + ")}`);
+    if (frutas.length) detalles.push(`  • Fruta: ${frutas.join(" + ")}`);
+    if (toppings.length) {
+      detalles.push(
+        toppingsExtraCount > 0
+          ? `  • Topping: ${toppings.join(", ")} (+$${costoToppingsExtra} extra)`
+          : `  • Topping: ${toppings.join(", ")}`
+      );
+    }
+
+    let extrasLista = [];
+    if (kinder) extrasLista.push("Kinder Delice (+$17)");
+    if (helado) extrasLista.push("Helado (+$17)");
+    if (extrasLista.length) detalles.push(`  • Extra: ${extrasLista.join(" + ")}`);
+    if (banos.length) detalles.push(`  • Baño: ${banos.join(", ")}`);
+
+    let resumenIngredientes = [];
+    if (untables.length) resumenIngredientes.push(untables.join(" + "));
+    if (frutas.length) resumenIngredientes.push(`Fruta: ${frutas.join(" + ")}`);
+    if (toppings.length) resumenIngredientes.push(`Topping: ${toppings.join(", ")}`);
+    if (extrasLista.length) resumenIngredientes.push(extrasLista.join(", "));
+    if (banos.length) resumenIngredientes.push(`Baño: ${banos.join(", ")}`);
+
+    const textoVisual = `${etiquetaBase}${resumenIngredientes.length ? ` (${resumenIngredientes.join(" • ")})` : ""} ($${subtotal})`;
+    const textoWhatsApp = `*${etiquetaBase}* ($${subtotal})\n${detalles.join("\n")}`;
+
+    return { subtotal, textoVisual, textoWhatsApp };
+  }
+
   function agregarCrepa() {
     const especialesChecked = Array.from(document.querySelectorAll('.especial-base:checked'));
     const saladas = obtenerValores('input[name="salada"]');
@@ -1096,27 +1142,43 @@
     const helado = document.getElementById('extra-helado').checked;
     const banos = obtenerValores('.baño');
 
+    const tieneIngredientesDulces = untables.length > 0 || frutas.length > 0 || toppings.length > 0 || kinder || helado || banos.length > 0;
     const hayEspecial = especialesChecked.length > 0;
     const haySalada = saladas.length > 0 || aderezos.length > 0;
-    const hayDulce = dulceTipo.length > 0 || untables.length > 0 || frutas.length > 0 || toppings.length > 0 || kinder || helado || banos.length > 0;
+    const hayCrepaDulce = dulceTipo.length > 0 || (!hayEspecial && tieneIngredientesDulces);
 
-    if (!hayEspecial && !haySalada && !hayDulce) {
+    if (!hayEspecial && !haySalada && !hayCrepaDulce) {
       alert("Tacha al menos una opción en el volante antes de agregar.");
       return;
     }
 
-    let precioCrepa = 0;
+    let precioTotalItem = 0;
     let lineasVisual = [];
     let bloquesWA = [];
 
     if (hayEspecial) {
-      especialesChecked.forEach((el) => {
+      especialesChecked.forEach((el, idx) => {
         const nombreEsp = el.value;
-        const precioEsp = Number(el.dataset.precio || 0);
+        const precioBaseEsp = Number(el.dataset.precio || 0);
         const emojiEsp = nombreEsp === "Bowl Crepa" ? "🥣" : "🧇";
-        precioCrepa += precioEsp;
-        lineasVisual.push(`${emojiEsp} ${nombreEsp} ($${precioEsp})`);
-        bloquesWA.push(`*${emojiEsp} ${nombreEsp}* ($${precioEsp})`);
+        const etiquetaEsp = `${emojiEsp} ${nombreEsp}`;
+
+        // Si no hay Crepa Dulce marcada aparte, aplicamos los ingredientes dulces seleccionados al primer especial
+        const aplicarDulceAqui = !hayCrepaDulce && idx === 0;
+        const armado = construirDetalleDulce(
+          etiquetaEsp,
+          precioBaseEsp,
+          aplicarDulceAqui ? untables : [],
+          aplicarDulceAqui ? frutas : [],
+          aplicarDulceAqui ? toppings : [],
+          aplicarDulceAqui ? kinder : false,
+          aplicarDulceAqui ? helado : false,
+          aplicarDulceAqui ? banos : []
+        );
+
+        precioTotalItem += armado.subtotal;
+        lineasVisual.push(armado.textoVisual);
+        bloquesWA.push(armado.textoWhatsApp);
       });
     }
 
@@ -1129,59 +1191,43 @@
       bloquesWA.push(`*Crepa Salada*\n${detallesSalada.join("\n")}`);
     }
 
-    if (hayDulce) {
+    if (hayCrepaDulce) {
       const esCombinada = dulceTipo.includes("Combinada") || frutas.length >= 2;
-      const esSencilla = dulceTipo.includes("Sencilla") || (!esCombinada && (untables.length > 0 || frutas.length > 0 || toppings.length > 0 || kinder || helado || banos.length > 0));
-
-      let baseDulce = 0;
-      let etiquetaTipo = "";
+      let baseDulce = 70;
+      let etiquetaTipo = "Crepa Dulce Sencilla";
 
       if (esCombinada) {
         baseDulce = 80;
-        etiquetaTipo = "Crepa Combinada ($80)";
-      } else if (esSencilla) {
+        etiquetaTipo = "Crepa Dulce Combinada";
+      } else {
         const tieneVariosUntables = untables.length >= 2 || untables.includes("Combinada Especial");
         baseDulce = tieneVariosUntables ? 75 : 70;
         etiquetaTipo = tieneVariosUntables
-          ? "Crepa Sencilla c/ 2+ untables ($75)"
-          : "Crepa Sencilla ($70)";
+          ? "Crepa Dulce Sencilla (2+ untables)"
+          : "Crepa Dulce Sencilla";
       }
 
-      const toppingsExtraCount = Math.max(0, toppings.length - 1);
-      const costoToppingsExtra = toppingsExtraCount * 5;
-      const costoKinder = kinder ? 17 : 0;
-      const costoHelado = helado ? 17 : 0;
+      const armadoDulce = construirDetalleDulce(
+        etiquetaTipo,
+        baseDulce,
+        untables,
+        frutas,
+        toppings,
+        kinder,
+        helado,
+        banos
+      );
 
-      const subtotalDulce = baseDulce + costoToppingsExtra + costoKinder + costoHelado;
-      precioCrepa += subtotalDulce;
-
-      let detallesDulce = [`  • Tipo: ${etiquetaTipo}`];
-      if (untables.length) detallesDulce.push(`  • Untable: ${untables.join(" + ")}`);
-      if (frutas.length) detallesDulce.push(`  • Fruta: ${frutas.join(" + ")}`);
-      if (toppings.length) {
-        detallesDulce.push(
-          toppingsExtraCount > 0
-            ? `  • Topping: ${toppings.join(", ")} (+$${costoToppingsExtra} extra)`
-            : `  • Topping: ${toppings.join(", ")}`
-        );
-      }
-
-      let extrasLista = [];
-      if (kinder) extrasLista.push("Kinder Delice (+$17)");
-      if (helado) extrasLista.push("Helado (+$17)");
-      if (extrasLista.length) detallesDulce.push(`  • Extra: ${extrasLista.join(" + ")}`);
-
-      if (banos.length) detallesDulce.push(`  • Baño: ${banos.join(", ")}`);
-
-      lineasVisual.push(`Crepa Dulce (${etiquetaTipo}): ${untables.join(" + ") || "Sin untable"} | ${frutas.join(" + ") || "Sin fruta"}`);
-      bloquesWA.push(`*Crepa Dulce* ($${subtotalDulce})\n${detallesDulce.join("\n")}`);
+      precioTotalItem += armadoDulce.subtotal;
+      lineasVisual.push(armadoDulce.textoVisual);
+      bloquesWA.push(armadoDulce.textoWhatsApp);
     }
 
     carrito.push({
       tipo: "crepa",
-      textoVisual: `<strong>${lineasVisual.join(" / ")}</strong> ($${precioCrepa})`,
+      textoVisual: `<strong>${lineasVisual.join(" / ")}</strong> ($${precioTotalItem})`,
       textoWhatsApp: bloquesWA.join("\n\n"),
-      precio: precioCrepa
+      precio: precioTotalItem
     });
 
     document.querySelectorAll('#seccion-crepas input[type="checkbox"]').forEach(c => c.checked = false);
