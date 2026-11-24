@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junior's Creperie - Catálogo y Arma tu Crepa</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+    }
+    body {
+      background-color: #1a0d06;
+      color: #ffffff;
+      margin: 0;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+    }
+    .app-container {
+      max-width: 560px;
+      width: 100%;
+    }
+    .panel {
+      background: radial-gradient(circle at top, #5d2906 0%, #240e03 70%, #160802 100%);
+      border: 3px solid #ffd600;
+      border-radius: 18px;
+      padding: 20px 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      margin-bottom: 18px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #ffd600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.65), 0 0 12px rgba(255, 214, 0, 0.35);
+      background-color: #f5ebd6;
+      display: block;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2.1rem;
+      color: #ffffff;
+      text-shadow: 2px 3px 0px #000, 0 0 15px #ff9100;
+      font-style: italic;
+    }
+    .header span {
+      background: #0d47a1;
+      color: #ffd600;
+      padding: 3px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      border: 1px solid #ffd600;
+    }
+    .titulo-seccion {
+      background: #ffd600;
+      color: #1a0d06;
+      text-align: center;
+      font-weight: 900;
+      font-size: 1rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin: 12px 0 12px 0;
+      box-shadow: 2px 2px 0 #000;
+    }
+    /* Tarjetas del catálogo */
+    .catalogo-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .producto-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #ffd600;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .producto-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .producto-emoji {
+      font-size: 2.3rem;
+      min-width: 48px;
+      text-align: center;
+    }
+    .producto-nombre {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #ffd600;
+    }
+    .producto-desc {
+      font-size: 0.82rem;
+      color: #ffe082;
+      margin-top: 2px;
+    }
+    /* Selector de sabores dentro del cuadro de Frappés */
+    .sabores-box {
+      background: rgba(255, 214, 0, 0.1);
+      border: 1px dashed #ffd600;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    .sabores-label {
+      display: block;
+      font-size: 0.78rem;
+      color: #ffd600;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .sabores-opciones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .sabor-pill {
+      cursor: pointer;
+      user-select: none;
+    }
+    .sabor-pill input {
+      display: none;
+    }
+    .sabor-pill span {
+      display: inline-block;
+      background: #2b1408;
+      color: #ffe082;
+      border: 1px solid #ffd600;
+      border-radius: 20px;
+      padding: 5px 11px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      transition: all 0.15s;
+    }
+    .sabor-pill input:checked + span {
+      background: #ffd600;
+      color: #1a0d06;
+      box-shadow: 0 0 8px rgba(255, 214, 0, 0.6);
+    }
+    .producto-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 214, 0, 0.25);
+      padding-top: 8px;
+    }
+    .producto-precio {
+      color: #ffd600;
+      font-weight: 900;
+      font-size: 1.25rem;
+    }
+    .btn-add-prod {
+      background: #ffd600;
+      color: #1a0d06;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-weight: 900;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .btn-add-prod:active {
+      transform: scale(0.96);
+    }
+    /* Volante de crepas */
+    .columnas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      border-top: 2px solid #ffd600;
+      padding-top: 12px;
+    }
+    .col-salada {
+      border-right: 2px solid #ffd600;
+      padding-right: 10px;
+    }
+    .titulo-col {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .titulo-col small {
+      color: #fff;
+      font-size: 1rem;
+      display: block;
+    }
+    .titulo-col strong {
+      color: #ffd600;
+      font-size: 1.6rem;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .cinta-amarilla {
+      background: #ffd600;
+      color: #1a0d06;
+      text-align: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+      padding: 4px 6px;
+      border-radius: 6px;
+      margin: 12px 0 6px 0;
+      transform: rotate(-1deg);
+      box-shadow: 2px 2px 0 #000;
+    }
+    .sub-nota {
+      display: block;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #ffe082;
+      margin-bottom: 6px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.88rem;
+    }
+    .check-item input {
+      display: none;
+    }
+    .cuadrito {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      background-color: #ffd600;
+      border: 2px solid #000;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #d50000;
+      transition: transform 0.1s;
+    }
+    .check-item:active .cuadrito {
+      transform: scale(0.9);
+    }
+    .check-item input:checked + .cuadrito::after {
+      content: "✖";
+    }
+    .check-item input:checked ~ span {
+      color: #ffd600;
+      text-decoration: underline;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .extra-box {
+      background: rgba(255, 214, 0, 0.15);
+      border: 1px dashed #ffd600;
+      border-radius: 8px;
+      padding: 6px;
+      margin-top: 8px;
+    }
+    .extra-box .precio-extra {
+      color: #ff5252;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    /* Forma de pago */
+    .pago-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid #ffd600;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 8px 0 10px;
+    }
+    .pago-titulo {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #ffd600;
+      margin-bottom: 8px;
+    }
+    .pago-opciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .pago-pill {
+      cursor: pointer;
+      user-select: none;
+    }
+    .pago-pill input {
+      display: none;
+    }
+    .pago-pill span {
+      display: block;
+      text-align: center;
+      background: #2b1408;
+      color: #ffe082;
+      border: 1px solid #ffd600;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      transition: all 0.15s;
+    }
+    .pago-pill input:checked + span {
+      background: #ffd600;
+      color: #1a0d06;
+      box-shadow: 0 0 8px rgba(255, 214, 0, 0.5);
+    }
+    #efectivo-cambio-box {
+      margin-top: 8px;
+    }
+    /* Mapa y ubicación */
+    .mapa-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid #ffd600;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 8px 0 10px;
+    }
+    .mapa-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .mapa-titulo {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #ffd600;
+    }
+    .btn-gps {
+      background: #0d47a1;
+      color: #ffd600;
+      border: 1px solid #ffd600;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #mapa-entrega {
+      width: 100%;
+      height: 220px;
+      border-radius: 8px;
+      border: 1px solid #ffd600;
+      z-index: 1;
+    }
+    .coords-info {
+      font-size: 0.78rem;
+      color: #ffe082;
+      margin-top: 6px;
+    }
+    /* Carrito y envío */
+    .acciones {
+      margin-top: 12px;
+      background: rgba(0,0,0,0.55);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #ffd600;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 9px;
+      border-radius: 6px;
+      border: 1px solid #ffd600;
+      background: #2b1408;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    .btn-agregar {
+      background: #ffd600;
+      color: #1a0d06;
+    }
+    .btn-whatsapp {
+      background: #25D366;
+      color: #fff;
+      font-size: 1.05rem;
+    }
+    .resumen-lista {
+      margin: 10px 0;
+      font-size: 0.85rem;
+      color: #ffe082;
+    }
+    .pedido-card {
+      background: #2b1408;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid #ffd600;
+      gap: 8px;
+    }
+    .btn-del {
+      background: #d50000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .total-txt {
+      text-align: right;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #ffd600;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- 1. CATÁLOGO DE PRODUCTOS (SOLO LOS 3 PRODUCTOS) -->
+  <div class="panel">
+    <div class="header">
+      <img id="logo-negocio" src="logo.jpeg" alt="Junior's Creperie" class="logo-img">
+      <h1>Junior's</h1>
+      <span>CREPERIE</span>
+    </div>
+
+    <div class="titulo-seccion">📋 NUESTRO MENÚ ESPECIAL</div>
+
+    <div class="catalogo-grid">
+
+      <!-- CUADRO 1: FRAPPÉS CON TODOS SUS SABORES DENTRO -->
+      <div class="producto-card">
+        <div class="producto-top">
+          <div class="producto-emoji">🥤</div>
+          <div>
+            <div class="producto-nombre">Frappés</div>
+            <div class="producto-desc">Refresca tu antojo • Con crema batida y barquillo</div>
+          </div>
+        </div>
+
+        <div class="sabores-box">
+          <span class="sabores-label">👇 Elige tu sabor favorito:</span>
+          <div class="sabores-opciones">
+            <label class="sabor-pill">
+              <input type="radio" name="sabor-frappe" value="Moca" checked>
+              <span>Moca</span>
+            </label>
+            <label class="sabor-pill">
+              <input type="radio" name="sabor-frappe" value="Red Velvet">
+              <span>Red Velvet</span>
+            </label>
+            <label class="sabor-pill">
+              <input type="radio" name="sabor-frappe" value="Blueberry">
+              <span>Blueberry</span>
+            </label>
+            <label class="sabor-pill">
+              <input type="radio" name="sabor-frappe" value="Mazapán">
+              <span>Mazapán</span>
+            </label>
+            <label class="sabor-pill">
+              <input type="radio" name="sabor-frappe" value="Yogurt Natural">
+              <span>Yogurt Natural</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="producto-footer">
+          <span class="producto-precio">$75</span>
+          <button class="btn-add-prod" onclick="agregarFrappe()">+ Agregar Frappé</button>
+        </div>
+      </div>
+
+      <!-- CUADRO 2: BOWL CREPA -->
+      <div class="producto-card">
+        <div class="producto-top">
+          <div class="producto-emoji">🥣</div>
+          <div>
+            <div class="producto-nombre">Bowl Crepa</div>
+            <div class="producto-desc">Trozos de crepa con fresa, plátano y chocolate</div>
+          </div>
+        </div>
+        <div class="producto-footer">
+          <span class="producto-precio">$75</span>
+          <button class="btn-add-prod" onclick="agregarProductoSimple('Bowl Crepa', 75, '🥣')">+ Agregar Bowl</button>
+        </div>
+      </div>
+
+      <!-- CUADRO 3: WAFFLE -->
+      <div class="producto-card">
+        <div class="producto-top">
+          <div class="producto-emoji">🧇</div>
+          <div>
+            <div class="producto-nombre">Waffle</div>
+            <div class="producto-desc">Crujiente por fuera, suave por dentro con fruta y topping</div>
+          </div>
+        </div>
+        <div class="producto-footer">
+          <span class="producto-precio">$65</span>
+          <button class="btn-add-prod" onclick="agregarProductoSimple('Waffle', 65, '🧇')">+ Agregar Waffle</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:14px;">
+      <a href="#seccion-crepas" style="color:#ffd600; font-size:0.9rem; font-weight:bold;">
+        👇 Ir directo a armar tu crepa personalizada
+      </a>
+    </div>
+  </div>
+
+  <!-- 2. VOLANTE INTERACTIVO PARA ARMAR CREPAS -->
+  <div class="panel" id="seccion-crepas">
+    <div class="titulo-seccion">🥞 ARMA TU CREPA (TACHA TUS OPCIONES)</div>
+    <p style="font-size:0.8rem; color:#ffe082; text-align:center; margin:6px 0 12px;">
+      👆 Toca los cuadritos amarillos para marcar tu crepa
+    </p>
+
+    <div class="columnas">
+      <!-- COLUMNA IZQUIERDA: SALADA -->
+      <div class="col-salada">
+        <div class="titulo-col">
+          <small>Crepa</small>
+          <strong>Salada</strong>
+        </div>
+
+        <label class="check-item">
+          <input type="checkbox" name="salada" value="Crepa de Boneles">
+          <div class="cuadrito"></div>
+          <span>Crepa de Boneles</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox" name="salada" value="Crepa Hawaiana">
+          <div class="cuadrito"></div>
+          <span>Crepa Hawaiana</span>
+        </label>
+
+        <div class="cinta-amarilla">Aderezos a elegir</div>
+        <span class="sub-nota">(Puedes elegir hasta dos)</span>
+
+        <div class="grid-2">
+          <label class="check-item"><input type="checkbox" class="aderezo" value="Ranch"><div class="cuadrito"></div><span>Ranch</span></label>
+          <label class="check-item"><input type="checkbox" class="aderezo" value="Catsup"><div class="cuadrito"></div><span>Catsup</span></label>
+          <label class="check-item"><input type="checkbox" class="aderezo" value="BBQ"><div class="cuadrito"></div><span>BBQ</span></label>
+          <label class="check-item"><input type="checkbox" class="aderezo" value="Valentina"><div class="cuadrito"></div><span>Valentina</span></label>
+          <label class="check-item"><input type="checkbox" class="aderezo" value="Mango Habanero"><div class="cuadrito"></div><span>Mango Hab.</span></label>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: DULCE -->
+      <div>
+        <div class="titulo-col">
+          <small>Crepa</small>
+          <strong>Dulce</strong>
+        </div>
+
+        <label class="check-item">
+          <input type="checkbox" name="dulce_tipo" value="Sencilla">
+          <div class="cuadrito"></div>
+          <span>Sencilla <small>($70 • 1 fruta)</small></span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" name="dulce_tipo" value="Combinada">
+          <div class="cuadrito"></div>
+          <span>Combinada <small>($80 • 2 frutas)</small></span>
+        </label>
+
+        <div class="cinta-amarilla">Untable</div>
+        <span class="sub-nota">Sencilla: 1 ($70) / 2+ ($75) • Combinada: sin extra</span>
+        <label class="check-item"><input type="checkbox" class="untable" value="Nutella"><div class="cuadrito"></div><span>Nutella</span></label>
+        <label class="check-item"><input type="checkbox" class="untable" value="Queso Filadelfia"><div class="cuadrito"></div><span>Queso Filadelfia</span></label>
+        <label class="check-item"><input type="checkbox" class="untable" value="Zarzamora"><div class="cuadrito"></div><span>Zarzamora</span></label>
+        <label class="check-item"><input type="checkbox" class="untable" value="Combinada Especial"><div class="cuadrito"></div><span>Combinada Especial</span></label>
+
+        <div class="cinta-amarilla">Fruta a elegir</div>
+        <span class="sub-nota">(1 en sencilla / hasta 2 en combinada)</span>
+        <div class="grid-2">
+          <label class="check-item"><input type="checkbox" class="fruta" value="Plátano"><div class="cuadrito"></div><span>Plátano</span></label>
+          <label class="check-item"><input type="checkbox" class="fruta" value="Fresa"><div class="cuadrito"></div><span>Fresa</span></label>
+          <label class="check-item"><input type="checkbox" class="fruta" value="Durazno"><div class="cuadrito"></div><span>Durazno</span></label>
+          <label class="check-item"><input type="checkbox" class="fruta" value="Uva"><div class="cuadrito"></div><span>Uva</span></label>
+        </div>
+
+        <div class="cinta-amarilla">Topping</div>
+        <span class="sub-nota">(1 incluido • Extra +$5 c/u)</span>
+        <div class="grid-2">
+          <label class="check-item"><input type="checkbox" class="topping" value="Coco Rayado"><div class="cuadrito"></div><span>Coco Rayado</span></label>
+          <label class="check-item"><input type="checkbox" class="topping" value="Froot Loops"><div class="cuadrito"></div><span>Flot Lups</span></label>
+          <label class="check-item"><input type="checkbox" class="topping" value="Bombones"><div class="cuadrito"></div><span>Bombones</span></label>
+          <label class="check-item"><input type="checkbox" class="topping" value="Nuez"><div class="cuadrito"></div><span>Nuez</span></label>
+          <label class="check-item"><input type="checkbox" class="topping" value="Oreo"><div class="cuadrito"></div><span>Oreo</span></label>
+          <label class="check-item"><input type="checkbox" class="topping" value="Chocokrispis"><div class="cuadrito"></div><span>Chocokrispis</span></label>
+        </div>
+
+        <div class="extra-box">
+          <label class="check-item" style="margin-bottom:6px;">
+            <input type="checkbox" id="kinder-delice" value="Kinder Delice (+$17)" data-precio="17">
+            <div class="cuadrito"></div>
+            <span>Kinder Delice <span class="precio-extra">+$17</span></span>
+          </label>
+          <label class="check-item" style="margin:0;">
+            <input type="checkbox" id="extra-helado" value="Helado (+$17)" data-precio="17">
+            <div class="cuadrito"></div>
+            <span>Helado <span class="precio-extra">+$17</span></span>
+          </label>
+        </div>
+
+        <div class="cinta-amarilla">¿Con qué va tu crepa?</div>
+        <div class="grid-2">
+          <label class="check-item"><input type="checkbox" class="baño" value="Lechera"><div class="cuadrito"></div><span>Lechera</span></label>
+          <label class="check-item"><input type="checkbox" class="baño" value="Chocolate"><div class="cuadrito"></div><span>Chocolate</span></label>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-agregar" onclick="agregarCrepa()">➕ Agregar esta crepa al pedido</button>
+  </div>
+
+  <!-- 3. CARRITO UNIFICADO Y ENVÍO A WHATSAPP -->
+  <div class="panel" style="margin-bottom:0;">
+    <div class="titulo-seccion" style="margin-top:0;">🛒 TU PEDIDO COMPLETO</div>
+
+    <div class="acciones" style="border:none; background:transparent; padding:0;">
+      <div class="resumen-lista" id="lista-pedidos">Aún no agregas productos ni crepas.</div>
+      <div class="total-txt" id="total-pedido">Total: $0</div>
+
+      <input type="text" id="cliente-nombre" placeholder="Tu nombre">
+      <input type="text" id="cliente-direccion" placeholder="Calle, número o referencia (o 'Paso a recoger')">
+      <input type="text" id="cliente-notas" placeholder="Notas para cocina (opcional, ej. sin azúcar / extra servilletas)">
+
+      <div class="pago-box">
+        <span class="pago-titulo">💳 Forma de pago:</span>
+        <div class="pago-opciones">
+          <label class="pago-pill">
+            <input type="radio" name="forma-pago" value="Efectivo" checked onchange="togglePagoEfectivo()">
+            <span>💵 Efectivo</span>
+          </label>
+          <label class="pago-pill">
+            <input type="radio" name="forma-pago" value="Transferencia" onchange="togglePagoEfectivo()">
+            <span>🏦 Transferencia</span>
+          </label>
+        </div>
+        <div id="efectivo-cambio-box">
+          <input type="text" id="pago-con" style="margin-top:8px; margin-bottom:0;" placeholder="¿Con cuánto pagas? (opcional, ej. $500)">
+        </div>
+      </div>
+
+      <div class="mapa-box">
+        <div class="mapa-header">
+          <span class="mapa-titulo">📍 Toca el mapa o mueve el pin para ubicación exacta:</span>
+          <button type="button" class="btn-gps" onclick="usarUbicacionActual(true)">🎯 Mi ubicación GPS</button>
+        </div>
+        <div id="mapa-entrega"></div>
+        <div class="coords-info" id="texto-coordenadas">Buscando tu ubicación exacta...</div>
+      </div>
+
+      <button type="button" class="btn btn-whatsapp" onclick="enviarWhatsApp()">📲 Enviar Pedido a Junior's Creperie</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Coloca aquí el número de WhatsApp con código de país (ej. "5217221234567")
+  const TELEFONO_NEGOCIO = "7293610746";
+  let carrito = [];
+
+  function togglePagoEfectivo() {
+    const metodo = document.querySelector('input[name="forma-pago"]:checked')?.value;
+    const cambioBox = document.getElementById('efectivo-cambio-box');
+    cambioBox.style.display = metodo === "Efectivo" ? "block" : "none";
+  }
+
+  // Centro inicial de respaldo hasta que llegue la ubicación GPS del usuario
+  const LAT_INICIAL = 19.2826;
+  const LNG_INICIAL = -99.6557;
+  let ubicacionSeleccionada = null;
+
+  const mapa = L.map('mapa-entrega').setView([LAT_INICIAL, LNG_INICIAL], 14);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxZoom: 19
+  }).addTo(mapa);
+
+  const marcador = L.marker([LAT_INICIAL, LNG_INICIAL], { draggable: true }).addTo(mapa);
+
+  function actualizarUbicacion(lat, lng, zoom = null) {
+    const latNum = Number(lat.toFixed(6));
+    const lngNum = Number(lng.toFixed(6));
+    ubicacionSeleccionada = { lat: latNum, lng: lngNum };
+    marcador.setLatLng([latNum, lngNum]);
+    if (zoom) {
+      mapa.setView([latNum, lngNum], zoom);
+    } else {
+      mapa.panTo([latNum, lngNum]);
+    }
+    document.getElementById('texto-coordenadas').innerText =
+      `📍 Ubicación exacta: ${latNum}, ${lngNum} (se enviará enlace de Google Maps)`;
+  }
+
+  mapa.on('click', (e) => {
+    actualizarUbicacion(e.latlng.lat, e.latlng.lng);
+  });
+
+  marcador.on('dragend', () => {
+    const pos = marcador.getLatLng();
+    actualizarUbicacion(pos.lat, pos.lng);
+  });
+
+  function usarUbicacionActual(mostrarAlerta = false) {
+    if (!navigator.geolocation) {
+      if (mostrarAlerta) {
+        alert("Tu navegador no soporta geolocalización. Puedes tocar el mapa para poner el pin.");
+      }
+      return;
+    }
+    document.getElementById('texto-coordenadas').innerText = "🎯 Obteniendo tu ubicación exacta...";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        actualizarUbicacion(pos.coords.latitude, pos.coords.longitude, 17);
+      },
+      (err) => {
+        document.getElementById('texto-coordenadas').innerText =
+          "Ubicación no disponible. Activa la ubicación en tu dispositivo/navegador o toca el mapa.";
+        if (mostrarAlerta) {
+          if (err.code === 1) {
+            alert("Permiso denegado o ubicación desactivada en el sistema. Actívala y vuelve a intentar.");
+          } else {
+            alert("No se pudo obtener tu GPS en este momento. Toca el mapa para marcar el punto.");
+          }
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    togglePagoEfectivo();
+    usarUbicacionActual(false);
+  });
+
+  function agregarFrappe() {
+    const saborSeleccionado = document.querySelector('input[name="sabor-frappe"]:checked');
+    const sabor = saborSeleccionado ? saborSeleccionado.value : "Moca";
+
+    carrito.push({
+      tipo: "catalogo",
+      textoVisual: `<strong>🥤 Frappé (${sabor})</strong> ($75)`,
+      textoWhatsApp: `*Frappé sabor ${sabor}* ($75)`,
+      precio: 75
+    });
+    renderCarrito();
+  }
+
+  function agregarProductoSimple(nombre, precio, emoji) {
+    carrito.push({
+      tipo: "catalogo",
+      textoVisual: `<strong>${emoji} ${nombre}</strong> ($${precio})`,
+      textoWhatsApp: `*${nombre}* ($${precio})`,
+      precio: precio
+    });
+    renderCarrito();
+  }
+
+  // Máximo 2 aderezos en crepa salada
+  document.querySelectorAll('.aderezo').forEach(chk => {
+    chk.addEventListener('change', () => {
+      const seleccionados = document.querySelectorAll('.aderezo:checked');
+      if (seleccionados.length > 2) {
+        chk.checked = false;
+        alert("Solo puedes elegir hasta 2 aderezos para tu crepa salada.");
+      }
+    });
+  });
+
+  function obtenerValores(selector) {
+    return Array.from(document.querySelectorAll(selector + ':checked')).map(el => el.value);
+  }
+
+  function agregarCrepa() {
+    const saladas = obtenerValores('input[name="salada"]');
+    const aderezos = obtenerValores('.aderezo');
+    const dulceTipo = obtenerValores('input[name="dulce_tipo"]');
+    const untables = obtenerValores('.untable');
+    const frutas = obtenerValores('.fruta');
+    const toppings = obtenerValores('.topping');
+    const kinder = document.getElementById('kinder-delice').checked;
+    const helado = document.getElementById('extra-helado').checked;
+    const banos = obtenerValores('.baño');
+
+    const haySalada = saladas.length > 0 || aderezos.length > 0;
+    const hayDulce = dulceTipo.length > 0 || untables.length > 0 || frutas.length > 0 || toppings.length > 0 || kinder || helado || banos.length > 0;
+
+    if (!haySalada && !hayDulce) {
+      alert("Tacha al menos una opción en el volante de crepas antes de agregar.");
+      return;
+    }
+
+    let precioCrepa = 0;
+    let lineasVisual = [];
+    let bloquesWA = [];
+
+    if (haySalada) {
+      const tipoSalada = saladas.join(", ") || "Base salada";
+      let detallesSalada = [`  • Base: ${tipoSalada}`];
+      if (aderezos.length) detallesSalada.push(`  • Aderezos: ${aderezos.join(", ")}`);
+
+      lineasVisual.push(`Crepa Salada: ${tipoSalada}${aderezos.length ? ` | Aderezos: ${aderezos.join(", ")}` : ""}`);
+      bloquesWA.push(`*Crepa Salada*\n${detallesSalada.join("\n")}`);
+    }
+
+    if (hayDulce) {
+      const esCombinada = dulceTipo.includes("Combinada") || frutas.length >= 2;
+      const esSencilla = dulceTipo.includes("Sencilla") || (!esCombinada && (untables.length > 0 || frutas.length > 0 || toppings.length > 0 || kinder || helado || banos.length > 0));
+
+      let baseDulce = 0;
+      let etiquetaTipo = "";
+
+      if (esCombinada) {
+        baseDulce = 80;
+        etiquetaTipo = "Crepa Combinada ($80)";
+      } else if (esSencilla) {
+        const tieneVariosUntables = untables.length >= 2 || untables.includes("Combinada Especial");
+        baseDulce = tieneVariosUntables ? 75 : 70;
+        etiquetaTipo = tieneVariosUntables
+          ? "Crepa Sencilla c/ 2+ untables ($75)"
+          : "Crepa Sencilla ($70)";
+      }
+
+      const toppingsExtraCount = Math.max(0, toppings.length - 1);
+      const costoToppingsExtra = toppingsExtraCount * 5;
+      const costoKinder = kinder ? 17 : 0;
+      const costoHelado = helado ? 17 : 0;
+
+      const subtotalDulce = baseDulce + costoToppingsExtra + costoKinder + costoHelado;
+      precioCrepa += subtotalDulce;
+
+      let detallesDulce = [`  • Tipo: ${etiquetaTipo}`];
+      if (untables.length) detallesDulce.push(`  • Untable: ${untables.join(" + ")}`);
+      if (frutas.length) detallesDulce.push(`  • Fruta: ${frutas.join(" + ")}`);
+      if (toppings.length) {
+        detallesDulce.push(
+          toppingsExtraCount > 0
+            ? `  • Topping: ${toppings.join(", ")} (+$${costoToppingsExtra} extra)`
+            : `  • Topping: ${toppings.join(", ")}`
+        );
+      }
+
+      let extrasLista = [];
+      if (kinder) extrasLista.push("Kinder Delice (+$17)");
+      if (helado) extrasLista.push("Helado (+$17)");
+      if (extrasLista.length) detallesDulce.push(`  • Extra: ${extrasLista.join(" + ")}`);
+
+      if (banos.length) detallesDulce.push(`  • Baño: ${banos.join(", ")}`);
+
+      lineasVisual.push(`Crepa Dulce (${etiquetaTipo}): ${untables.join(" + ") || "Sin untable"} | ${frutas.join(" + ") || "Sin fruta"}`);
+      bloquesWA.push(`*Crepa Dulce* ($${subtotalDulce})\n${detallesDulce.join("\n")}`);
+    }
+
+    carrito.push({
+      tipo: "crepa",
+      textoVisual: `<strong>${lineasVisual.join(" / ")}</strong> ($${precioCrepa})`,
+      textoWhatsApp: bloquesWA.join("\n\n"),
+      precio: precioCrepa
+    });
+
+    document.querySelectorAll('#seccion-crepas input[type="checkbox"]').forEach(c => c.checked = false);
+    renderCarrito();
+  }
+
+  function eliminarItem(i) {
+    carrito.splice(i, 1);
+    renderCarrito();
+  }
+
+  function renderCarrito() {
+    const contenedor = document.getElementById('lista-pedidos');
+    const totalEl = document.getElementById('total-pedido');
+
+    if (carrito.length === 0) {
+      contenedor.innerHTML = "Aún no agregas productos ni crepas.";
+      totalEl.innerText = "Total: $0";
+      return;
+    }
+
+    let total = 0;
+    contenedor.innerHTML = carrito.map((item, i) => {
+      total += item.precio;
+      return `
+        <div class="pedido-card">
+          <div>${item.textoVisual}</div>
+          <button class="btn-del" onclick="eliminarItem(${i})">X</button>
+        </div>
+      `;
+    }).join("");
+
+    totalEl.innerText = `Total: $${total}`;
+  }
+
+  function enviarWhatsApp() {
+    const limpio = TELEFONO_NEGOCIO.replace(/\D/g, "");
+    if (!limpio || limpio.includes("X")) {
+      alert("Configura primero el número de WhatsApp del negocio en TELEFONO_NEGOCIO.");
+      return;
+    }
+
+    const algoMarcado = document.querySelectorAll('#seccion-crepas input[type="checkbox"]:checked').length > 0;
+    if (algoMarcado) {
+      agregarCrepa();
+    }
+
+    if (carrito.length === 0) {
+      alert("Agrega un producto del catálogo o arma una crepa antes de enviar.");
+      return;
+    }
+
+    const nombre = document.getElementById('cliente-nombre').value.trim();
+    const direccion = document.getElementById('cliente-direccion').value.trim();
+    const notas = document.getElementById('cliente-notas').value.trim();
+    const formaPago = document.querySelector('input[name="forma-pago"]:checked')?.value || "Efectivo";
+    const pagoCon = document.getElementById('pago-con').value.trim();
+
+    if (!nombre) {
+      alert("Escribe tu nombre para identificar tu pedido.");
+      return;
+    }
+
+    let total = 0;
+    let mensaje = `*PEDIDO JUNIOR'S CREPERIE*\n==============================\n`;
+    mensaje += `*Cliente:* ${nombre}\n`;
+    if (direccion) mensaje += `*Entrega:* ${direccion}\n`;
+    mensaje += `*Pago:* ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (Paga con ${pagoCon})` : ""}\n`;
+    if (notas) mensaje += `*Notas cocina:* ${notas}\n`;
+    if (ubicacionSeleccionada) {
+      const linkMaps = `https://www.google.com/maps?q=${ubicacionSeleccionada.lat},${ubicacionSeleccionada.lng}`;
+      mensaje += `*Ubicación GPS:* ${linkMaps}\n`;
+      mensaje += `*Coordenadas:* ${ubicacionSeleccionada.lat}, ${ubicacionSeleccionada.lng}\n`;
+    }
+    mensaje += `==============================\n\n`;
+
+    carrito.forEach((item, idx) => {
+      total += item.precio;
+      mensaje += `*${idx + 1}.* ${item.textoWhatsApp}\n\n`;
+    });
+
+    mensaje += `==============================\n`;
+    mensaje += `*TOTAL A COBRAR: $${total}*\n`;
+
+    const url = `https://wa.me/${limpio}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+  }
+</script>
+
+</body>
+</html>
