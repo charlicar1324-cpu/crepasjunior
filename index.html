@@ -4,211 +4,265 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Junior's Creperie - Catálogo y Arma tu Crepa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    :root {
+      --bg-crema: #f5ebd6;
+      --panel-oscuro: #2b1205;
+      --panel-gradiente: radial-gradient(circle at top, #4d2209 0%, #2b1205 72%, #1d0b02 100%);
+      --tarjeta-oscura: rgba(20, 8, 2, 0.58);
+      --borde-dorado: #eab308;
+      --acento-amarillo: #facc15;
+      --texto-claro: #fffaf0;
+      --texto-suave: #f3dfb8;
+      --texto-oscuro: #241004;
+      --azul-etiqueta: #155e75;
+    }
+
     * {
       box-sizing: border-box;
-      font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
     }
+
+    h1, h2, h3, .titulo-seccion, .cinta-amarilla, .producto-nombre, .producto-precio, .titulo-col strong, .btn, .total-txt {
+      font-family: 'Fredoka', 'Segoe UI', sans-serif;
+    }
+
     html, body {
       max-width: 100%;
       overflow-x: hidden;
       margin: 0;
       padding: 0;
     }
+
     body {
-      background-color: #f3e7d1;
-      /* Si subes tu imagen como fondo.png al repo, descomenta la siguiente línea:
+      background-color: var(--bg-crema);
+      /* Si guardas tu imagen como fondo.png junto a index.html, descomenta estas líneas:
       background-image: url('fondo.png');
       background-size: cover;
       background-position: center;
       background-attachment: fixed; */
-      color: #ffffff;
-      padding: 12px 10px;
+      color: var(--texto-claro);
+      padding: 14px 10px;
       display: flex;
       justify-content: center;
     }
+
     .app-container {
       max-width: 560px;
       width: 100%;
       min-width: 0;
     }
+
     .panel {
-      background: radial-gradient(circle at top, #5d2906 0%, #240e03 70%, #160802 100%);
-      border: 3px solid #ffd600;
-      border-radius: 18px;
-      padding: 18px 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      background: var(--panel-gradiente);
+      border: 2.5px solid var(--borde-dorado);
+      border-radius: 20px;
+      padding: 18px 13px;
+      box-shadow: 0 12px 26px rgba(58, 28, 7, 0.18);
       margin-bottom: 18px;
       width: 100%;
       max-width: 100%;
       min-width: 0;
       overflow: hidden;
     }
+
     .header {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
     }
+
     .logo-img {
-      width: 150px;
-      height: 150px;
+      width: 146px;
+      height: 146px;
       max-width: 100%;
       object-fit: cover;
       border-radius: 50%;
-      border: 3px solid #ffd600;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.65), 0 0 12px rgba(255, 214, 0, 0.35);
+      border: 3px solid var(--acento-amarillo);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), 0 0 14px rgba(250, 204, 21, 0.3);
       background-color: #f5ebd6;
       display: block;
     }
+
     .header h1 {
       margin: 0;
-      font-size: 2.1rem;
-      color: #ffffff;
-      text-shadow: 2px 3px 0px #000, 0 0 15px #ff9100;
-      font-style: italic;
+      font-size: 2.15rem;
+      font-weight: 700;
+      color: var(--texto-claro);
+      text-shadow: 2px 3px 0px #160701, 0 0 14px rgba(245, 158, 11, 0.45);
+      letter-spacing: 0.5px;
     }
-    .header span {
-      background: #0d47a1;
-      color: #ffd600;
-      padding: 3px 14px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+
+    .header .badge-creperie {
+      background: #1e3a8a;
+      color: var(--acento-amarillo);
+      padding: 4px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
       letter-spacing: 2px;
-      border: 1px solid #ffd600;
+      border: 1.5px solid var(--borde-dorado);
     }
+
     .titulo-seccion {
-      background: #ffd600;
-      color: #1a0d06;
+      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
+      color: var(--texto-oscuro);
       text-align: center;
-      font-weight: 900;
+      font-weight: 700;
       font-size: 1rem;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin: 12px 0 12px 0;
-      box-shadow: 2px 2px 0 #000;
+      letter-spacing: 0.4px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      margin: 12px 0;
+      box-shadow: 0 3px 0 #78350f;
     }
+
     /* Tarjetas del catálogo */
     .catalogo-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       gap: 12px;
     }
+
     .producto-card {
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid #ffd600;
-      border-radius: 14px;
+      background: var(--tarjeta-oscura);
+      border: 2px solid rgba(250, 204, 21, 0.85);
+      border-radius: 15px;
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       min-width: 0;
     }
+
     .producto-top {
       display: flex;
       align-items: center;
       gap: 12px;
       min-width: 0;
     }
+
     .producto-emoji {
-      font-size: 2.3rem;
-      min-width: 48px;
+      font-size: 2.2rem;
+      min-width: 46px;
       text-align: center;
       flex-shrink: 0;
     }
+
     .producto-nombre {
-      font-size: 1.15rem;
-      font-weight: 900;
-      color: #ffd600;
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--acento-amarillo);
     }
+
     .producto-desc {
-      font-size: 0.82rem;
-      color: #ffe082;
+      font-size: 0.83rem;
+      color: var(--texto-suave);
       margin-top: 2px;
+      line-height: 1.3;
       overflow-wrap: break-word;
     }
+
     /* Selector de sabores dentro del cuadro de Frappés */
     .sabores-box {
-      background: rgba(255, 214, 0, 0.1);
-      border: 1px dashed #ffd600;
-      border-radius: 10px;
-      padding: 8px 10px;
+      background: rgba(250, 204, 21, 0.08);
+      border: 1.5px dashed rgba(250, 204, 21, 0.75);
+      border-radius: 12px;
+      padding: 9px 10px;
       min-width: 0;
     }
+
     .sabores-label {
       display: block;
-      font-size: 0.78rem;
-      color: #ffd600;
-      font-weight: bold;
-      margin-bottom: 6px;
+      font-size: 0.8rem;
+      color: var(--acento-amarillo);
+      font-weight: 700;
+      margin-bottom: 7px;
     }
+
     .sabores-opciones {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
+
     .sabor-pill {
       cursor: pointer;
       user-select: none;
     }
+
     .sabor-pill input {
       display: none;
     }
+
     .sabor-pill span {
       display: inline-block;
-      background: #2b1408;
-      color: #ffe082;
-      border: 1px solid #ffd600;
-      border-radius: 20px;
-      padding: 5px 11px;
+      background: #240f05;
+      color: var(--texto-suave);
+      border: 1.5px solid rgba(250, 204, 21, 0.7);
+      border-radius: 999px;
+      padding: 5px 12px;
       font-size: 0.8rem;
-      font-weight: bold;
-      transition: all 0.15s;
+      font-weight: 700;
+      transition: all 0.15s ease;
     }
+
     .sabor-pill input:checked + span {
-      background: #ffd600;
-      color: #1a0d06;
-      box-shadow: 0 0 8px rgba(255, 214, 0, 0.6);
+      background: var(--acento-amarillo);
+      color: var(--texto-oscuro);
+      border-color: var(--acento-amarillo);
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
     }
+
     .producto-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid rgba(255, 214, 0, 0.25);
-      padding-top: 8px;
+      border-top: 1px solid rgba(250, 204, 21, 0.22);
+      padding-top: 9px;
       gap: 8px;
     }
+
     .producto-precio {
-      color: #ffd600;
-      font-weight: 900;
-      font-size: 1.25rem;
+      color: var(--acento-amarillo);
+      font-weight: 700;
+      font-size: 1.3rem;
     }
+
     .btn-add-prod {
-      background: #ffd600;
-      color: #1a0d06;
+      background: var(--acento-amarillo);
+      color: var(--texto-oscuro);
       border: none;
-      border-radius: 8px;
+      border-radius: 9px;
       padding: 8px 14px;
-      font-weight: 900;
-      font-size: 0.88rem;
+      font-weight: 700;
+      font-size: 0.9rem;
       cursor: pointer;
+      box-shadow: 0 2px 0 #92400e;
     }
+
     .btn-add-prod:active {
-      transform: scale(0.96);
+      transform: translateY(1px);
     }
+
     /* Volante de crepas */
     .columnas {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
-      border-top: 2px solid #ffd600;
+      border-top: 2px solid rgba(250, 204, 21, 0.8);
       padding-top: 12px;
       width: 100%;
       min-width: 0;
     }
+
     .col-salada,
     .col-dulce {
       min-width: 0;
@@ -216,48 +270,58 @@
       overflow-wrap: break-word;
       word-wrap: break-word;
     }
+
     .col-salada {
-      border-right: 2px solid #ffd600;
+      border-right: 2px solid rgba(250, 204, 21, 0.8);
       padding-right: 8px;
     }
+
     .col-dulce {
       padding-left: 2px;
     }
+
     .titulo-col {
       text-align: center;
       margin-bottom: 10px;
     }
+
     .titulo-col small {
-      color: #fff;
+      color: var(--texto-claro);
       font-size: 0.95rem;
+      font-weight: 600;
       display: block;
     }
+
     .titulo-col strong {
-      color: #ffd600;
+      color: var(--acento-amarillo);
       font-size: 1.45rem;
-      text-shadow: 2px 2px 0 #000;
+      font-weight: 700;
+      text-shadow: 2px 2px 0 #140701;
     }
+
     .cinta-amarilla {
-      background: #ffd600;
-      color: #1a0d06;
+      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
+      color: var(--texto-oscuro);
       text-align: center;
-      font-weight: 900;
-      font-size: 0.8rem;
-      padding: 4px 6px;
-      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 5px 6px;
+      border-radius: 8px;
       margin: 12px 0 6px 0;
-      box-shadow: 2px 2px 0 #000;
+      box-shadow: 0 2px 0 #78350f;
       overflow-wrap: break-word;
     }
+
     .sub-nota {
       display: block;
       text-align: center;
-      font-size: 0.68rem;
-      color: #ffe082;
-      margin-bottom: 6px;
+      font-size: 0.7rem;
+      color: var(--texto-suave);
+      margin-bottom: 7px;
       line-height: 1.25;
       overflow-wrap: break-word;
     }
+
     .check-item {
       display: flex;
       align-items: flex-start;
@@ -265,14 +329,16 @@
       margin-bottom: 7px;
       cursor: pointer;
       user-select: none;
-      font-size: 0.82rem;
-      line-height: 1.2;
+      font-size: 0.83rem;
+      line-height: 1.25;
       min-width: 0;
       max-width: 100%;
     }
+
     .check-item input {
       display: none;
     }
+
     .check-item > span,
     .check-item > span small {
       min-width: 0;
@@ -280,55 +346,63 @@
       overflow-wrap: break-word;
       word-break: break-word;
     }
+
     .check-item > span small {
       display: block;
       font-size: 0.72rem;
-      color: #ffe082;
+      color: var(--texto-suave);
     }
+
     .cuadrito {
       width: 20px;
       height: 20px;
       min-width: 20px;
       flex-shrink: 0;
-      background-color: #ffd600;
-      border: 2px solid #000;
+      background-color: var(--acento-amarillo);
+      border: 2px solid #1d0b02;
       border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
       font-size: 1rem;
-      color: #d50000;
+      color: #dc2626;
       transition: transform 0.1s;
       margin-top: 1px;
     }
+
     .check-item:active .cuadrito {
-      transform: scale(0.9);
+      transform: scale(0.92);
     }
+
     .check-item input:checked + .cuadrito::after {
       content: "✖";
     }
+
     .check-item input:checked ~ span {
-      color: #ffd600;
-      text-decoration: underline;
+      color: var(--acento-amarillo);
+      font-weight: 700;
     }
+
     .grid-2 {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 4px;
       min-width: 0;
     }
+
     .extra-box {
-      background: rgba(255, 214, 0, 0.15);
-      border: 1px dashed #ffd600;
-      border-radius: 8px;
-      padding: 6px;
+      background: rgba(250, 204, 21, 0.12);
+      border: 1.5px dashed rgba(250, 204, 21, 0.75);
+      border-radius: 10px;
+      padding: 7px;
       margin-top: 8px;
       min-width: 0;
     }
+
     .extra-box .precio-extra {
-      color: #ff5252;
-      font-weight: bold;
+      color: #fca5a5;
+      font-weight: 700;
       font-size: 0.8rem;
       white-space: nowrap;
     }
@@ -339,7 +413,7 @@
       }
       .panel {
         padding: 14px 8px;
-        border-radius: 14px;
+        border-radius: 15px;
       }
       .columnas {
         gap: 6px;
@@ -351,11 +425,11 @@
         font-size: 1.25rem;
       }
       .cinta-amarilla {
-        font-size: 0.74rem;
-        padding: 4px 4px;
+        font-size: 0.75rem;
+        padding: 4px;
       }
       .check-item {
-        font-size: 0.75rem;
+        font-size: 0.76rem;
         gap: 5px;
       }
       .cuadrito {
@@ -372,62 +446,71 @@
 
     /* Forma de pago */
     .pago-box {
-      background: rgba(0, 0, 0, 0.45);
-      border: 2px solid #ffd600;
-      border-radius: 12px;
+      background: var(--tarjeta-oscura);
+      border: 2px solid rgba(250, 204, 21, 0.8);
+      border-radius: 13px;
       padding: 10px;
       margin: 8px 0 10px;
       min-width: 0;
     }
+
     .pago-titulo {
       display: block;
-      font-size: 0.85rem;
-      font-weight: bold;
-      color: #ffd600;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--acento-amarillo);
       margin-bottom: 8px;
     }
+
     .pago-opciones {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
     }
+
     .pago-pill {
       cursor: pointer;
       user-select: none;
       min-width: 0;
     }
+
     .pago-pill input {
       display: none;
     }
+
     .pago-pill span {
       display: block;
       text-align: center;
-      background: #2b1408;
-      color: #ffe082;
-      border: 1px solid #ffd600;
-      border-radius: 8px;
+      background: #240f05;
+      color: var(--texto-suave);
+      border: 1.5px solid rgba(250, 204, 21, 0.7);
+      border-radius: 9px;
       padding: 8px 10px;
       font-size: 0.88rem;
-      font-weight: bold;
-      transition: all 0.15s;
+      font-weight: 700;
+      transition: all 0.15s ease;
     }
+
     .pago-pill input:checked + span {
-      background: #ffd600;
-      color: #1a0d06;
-      box-shadow: 0 0 8px rgba(255, 214, 0, 0.5);
+      background: var(--acento-amarillo);
+      color: var(--texto-oscuro);
+      border-color: var(--acento-amarillo);
     }
+
     #efectivo-cambio-box {
       margin-top: 8px;
     }
+
     /* Mapa y ubicación */
     .mapa-box {
-      background: rgba(0, 0, 0, 0.45);
-      border: 2px solid #ffd600;
-      border-radius: 12px;
+      background: var(--tarjeta-oscura);
+      border: 2px solid rgba(250, 204, 21, 0.8);
+      border-radius: 13px;
       padding: 10px;
       margin: 8px 0 10px;
       min-width: 0;
     }
+
     .mapa-header {
       display: flex;
       justify-content: space-between;
@@ -436,109 +519,127 @@
       flex-wrap: wrap;
       margin-bottom: 8px;
     }
+
     .mapa-titulo {
       font-size: 0.85rem;
-      font-weight: bold;
-      color: #ffd600;
+      font-weight: 700;
+      color: var(--acento-amarillo);
     }
+
     .btn-gps {
-      background: #0d47a1;
-      color: #ffd600;
-      border: 1px solid #ffd600;
-      border-radius: 6px;
+      background: #1e3a8a;
+      color: var(--acento-amarillo);
+      border: 1.5px solid var(--borde-dorado);
+      border-radius: 7px;
       padding: 6px 10px;
       font-size: 0.78rem;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
     }
+
     #mapa-entrega {
       width: 100%;
       height: 220px;
-      border-radius: 8px;
-      border: 1px solid #ffd600;
+      border-radius: 10px;
+      border: 1.5px solid var(--borde-dorado);
       z-index: 1;
     }
+
     .coords-info {
       font-size: 0.78rem;
-      color: #ffe082;
+      color: var(--texto-suave);
       margin-top: 6px;
       overflow-wrap: break-word;
     }
+
     /* Carrito y envío */
     .acciones {
-      margin-top: 12px;
-      background: rgba(0,0,0,0.55);
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #ffd600;
+      margin-top: 10px;
       min-width: 0;
     }
+
     input[type="text"] {
       width: 100%;
       max-width: 100%;
-      padding: 9px;
-      border-radius: 6px;
-      border: 1px solid #ffd600;
-      background: #2b1408;
-      color: #fff;
+      padding: 10px 11px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(250, 204, 21, 0.75);
+      background: #240f05;
+      color: var(--texto-claro);
       margin-bottom: 8px;
+      font-size: 0.9rem;
     }
+
+    input[type="text"]::placeholder {
+      color: rgba(243, 223, 184, 0.65);
+    }
+
     .btn {
       width: 100%;
       max-width: 100%;
       padding: 12px;
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
+      border-radius: 10px;
+      font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
       margin-top: 6px;
     }
+
     .btn-agregar {
-      background: #ffd600;
-      color: #1a0d06;
+      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
+      color: var(--texto-oscuro);
+      box-shadow: 0 3px 0 #78350f;
     }
+
     .btn-whatsapp {
-      background: #25D366;
-      color: #fff;
+      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      color: #ffffff;
       font-size: 1.05rem;
+      box-shadow: 0 3px 0 #14532d;
     }
+
     .resumen-lista {
       margin: 10px 0;
-      font-size: 0.85rem;
-      color: #ffe082;
+      font-size: 0.86rem;
+      color: var(--texto-suave);
       overflow-wrap: break-word;
     }
+
     .pedido-card {
-      background: #2b1408;
-      padding: 8px 10px;
-      border-radius: 6px;
+      background: #240f05;
+      padding: 9px 11px;
+      border-radius: 8px;
       margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 3px solid #ffd600;
+      border-left: 3.5px solid var(--acento-amarillo);
       gap: 8px;
       min-width: 0;
     }
+
     .pedido-card > div {
       min-width: 0;
       overflow-wrap: break-word;
     }
+
     .btn-del {
-      background: #d50000;
-      color: white;
+      background: #dc2626;
+      color: #ffffff;
       border: none;
-      border-radius: 4px;
-      padding: 4px 8px;
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-weight: 700;
       cursor: pointer;
       flex-shrink: 0;
     }
+
     .total-txt {
       text-align: right;
-      font-size: 1.15rem;
-      font-weight: bold;
-      color: #ffd600;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--acento-amarillo);
       margin: 8px 0;
     }
   </style>
@@ -547,19 +648,19 @@
 
 <div class="app-container">
 
-  <!-- 1. CATÁLOGO DE PRODUCTOS (SOLO LOS 3 PRODUCTOS) -->
+  <!-- 1. CATÁLOGO DE PRODUCTOS -->
   <div class="panel">
     <div class="header">
       <img id="logo-negocio" src="logo.jpeg" alt="Junior's Creperie" class="logo-img">
       <h1>Junior's</h1>
-      <span>CREPERIE</span>
+      <span class="badge-creperie">CREPERIE</span>
     </div>
 
     <div class="titulo-seccion">📋 NUESTRO MENÚ ESPECIAL</div>
 
     <div class="catalogo-grid">
 
-      <!-- CUADRO 1: FRAPPÉS CON TODOS SUS SABORES DENTRO -->
+      <!-- CUADRO 1: FRAPPÉS -->
       <div class="producto-card">
         <div class="producto-top">
           <div class="producto-emoji">🥤</div>
@@ -634,7 +735,7 @@
     </div>
 
     <div style="text-align:center; margin-top:14px;">
-      <a href="#seccion-crepas" style="color:#ffd600; font-size:0.9rem; font-weight:bold;">
+      <a href="#seccion-crepas" style="color:#facc15; font-size:0.9rem; font-weight:700;">
         👇 Ir directo a armar tu crepa personalizada
       </a>
     </div>
@@ -643,7 +744,7 @@
   <!-- 2. VOLANTE INTERACTIVO PARA ARMAR CREPAS -->
   <div class="panel" id="seccion-crepas">
     <div class="titulo-seccion">🥞 ARMA TU CREPA (TACHA TUS OPCIONES)</div>
-    <p style="font-size:0.8rem; color:#ffe082; text-align:center; margin:6px 0 12px;">
+    <p style="font-size:0.8rem; color:#f3dfb8; text-align:center; margin:6px 0 12px;">
       👆 Toca los cuadritos amarillos para marcar tu crepa
     </p>
 
@@ -752,7 +853,7 @@
   <div class="panel" style="margin-bottom:0;">
     <div class="titulo-seccion" style="margin-top:0;">🛒 TU PEDIDO COMPLETO</div>
 
-    <div class="acciones" style="border:none; background:transparent; padding:0;">
+    <div class="acciones">
       <div class="resumen-lista" id="lista-pedidos">Aún no agregas productos ni crepas.</div>
       <div class="total-txt" id="total-pedido">Total: $0</div>
 
@@ -794,7 +895,6 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // Coloca aquí el número de WhatsApp con código de país (ej. "5217221234567")
   const TELEFONO_NEGOCIO = "7293610746";
   let carrito = [];
 
@@ -804,7 +904,6 @@
     cambioBox.style.display = metodo === "Efectivo" ? "block" : "none";
   }
 
-  // Centro inicial de respaldo hasta que llegue la ubicación GPS del usuario
   const LAT_INICIAL = 19.2826;
   const LNG_INICIAL = -99.6557;
   let ubicacionSeleccionada = null;
@@ -895,7 +994,6 @@
     renderCarrito();
   }
 
-  // Máximo 2 aderezos en crepa salada
   document.querySelectorAll('.aderezo').forEach(chk => {
     chk.addEventListener('change', () => {
       const seleccionados = document.querySelectorAll('.aderezo:checked');
