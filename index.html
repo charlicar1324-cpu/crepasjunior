@@ -10,16 +10,17 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
-      --bg-crema: #f5ebd6;
-      --panel-oscuro: #2b1205;
-      --panel-gradiente: radial-gradient(circle at top, #4d2209 0%, #2b1205 72%, #1d0b02 100%);
-      --tarjeta-oscura: rgba(20, 8, 2, 0.58);
-      --borde-dorado: #eab308;
-      --acento-amarillo: #facc15;
-      --texto-claro: #fffaf0;
-      --texto-suave: #f3dfb8;
-      --texto-oscuro: #241004;
-      --azul-etiqueta: #155e75;
+      --bg-beige: #f3e6cf;
+      --panel-beige: linear-gradient(180deg, #fffaf0 0%, #f6e7cb 100%);
+      --tarjeta-beige: #fffdf9;
+      --tarjeta-suave: #f7ead2;
+      --borde-canela: #9a5824;
+      --borde-suave: #d6b68a;
+      --texto-espresso: #2b1407;
+      --texto-cacao: #542910;
+      --acento-caramelo: #d97706;
+      --acento-dorado: #f59e0b;
+      --azul-etiqueta: #1e3a8a;
     }
 
     * {
@@ -39,13 +40,13 @@
     }
 
     body {
-      background-color: var(--bg-crema);
+      background-color: var(--bg-beige);
       /* Si guardas tu imagen como fondo.png junto a index.html, descomenta estas líneas:
       background-image: url('fondo.png');
       background-size: cover;
       background-position: center;
       background-attachment: fixed; */
-      color: var(--texto-claro);
+      color: var(--texto-espresso);
       padding: 14px 10px;
       display: flex;
       justify-content: center;
@@ -58,11 +59,11 @@
     }
 
     .panel {
-      background: var(--panel-gradiente);
-      border: 2.5px solid var(--borde-dorado);
+      background: var(--panel-beige);
+      border: 2.5px solid var(--borde-canela);
       border-radius: 20px;
       padding: 18px 13px;
-      box-shadow: 0 12px 26px rgba(58, 28, 7, 0.18);
+      box-shadow: 0 10px 24px rgba(74, 34, 12, 0.14);
       margin-bottom: 18px;
       width: 100%;
       max-width: 100%;
@@ -85,9 +86,9 @@
       max-width: 100%;
       object-fit: cover;
       border-radius: 50%;
-      border: 3px solid var(--acento-amarillo);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), 0 0 14px rgba(250, 204, 21, 0.3);
-      background-color: #f5ebd6;
+      border: 3px solid var(--borde-canela);
+      box-shadow: 0 6px 16px rgba(74, 34, 12, 0.22);
+      background-color: #fffdf9;
       display: block;
     }
 
@@ -95,25 +96,24 @@
       margin: 0;
       font-size: 2.15rem;
       font-weight: 700;
-      color: var(--texto-claro);
-      text-shadow: 2px 3px 0px #160701, 0 0 14px rgba(245, 158, 11, 0.45);
-      letter-spacing: 0.5px;
+      color: var(--texto-espresso);
+      letter-spacing: 0.4px;
     }
 
     .header .badge-creperie {
-      background: #1e3a8a;
-      color: var(--acento-amarillo);
+      background: var(--azul-etiqueta);
+      color: #fef3c7;
       padding: 4px 16px;
       border-radius: 999px;
       font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 2px;
-      border: 1.5px solid var(--borde-dorado);
+      border: 1.5px solid var(--borde-canela);
     }
 
     .titulo-seccion {
-      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
-      color: var(--texto-oscuro);
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #fffdf9;
       text-align: center;
       font-weight: 700;
       font-size: 1rem;
@@ -121,7 +121,7 @@
       padding: 7px 12px;
       border-radius: 10px;
       margin: 12px 0;
-      box-shadow: 0 3px 0 #78350f;
+      box-shadow: 0 3px 0 #7c3f12;
     }
 
     /* Tarjetas del catálogo */
@@ -132,14 +132,15 @@
     }
 
     .producto-card {
-      background: var(--tarjeta-oscura);
-      border: 2px solid rgba(250, 204, 21, 0.85);
+      background: var(--tarjeta-beige);
+      border: 2px solid var(--borde-suave);
       border-radius: 15px;
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       min-width: 0;
+      box-shadow: 0 3px 10px rgba(74, 34, 12, 0.06);
     }
 
     .producto-top {
@@ -159,12 +160,12 @@
     .producto-nombre {
       font-size: 1.18rem;
       font-weight: 700;
-      color: var(--acento-amarillo);
+      color: var(--texto-espresso);
     }
 
     .producto-desc {
       font-size: 0.83rem;
-      color: var(--texto-suave);
+      color: var(--texto-cacao);
       margin-top: 2px;
       line-height: 1.3;
       overflow-wrap: break-word;
@@ -172,8 +173,8 @@
 
     /* Selector de sabores dentro del cuadro de Frappés */
     .sabores-box {
-      background: rgba(250, 204, 21, 0.08);
-      border: 1.5px dashed rgba(250, 204, 21, 0.75);
+      background: var(--tarjeta-suave);
+      border: 1.5px dashed var(--borde-canela);
       border-radius: 12px;
       padding: 9px 10px;
       min-width: 0;
@@ -182,7 +183,7 @@
     .sabores-label {
       display: block;
       font-size: 0.8rem;
-      color: var(--acento-amarillo);
+      color: var(--texto-espresso);
       font-weight: 700;
       margin-bottom: 7px;
     }
@@ -204,9 +205,9 @@
 
     .sabor-pill span {
       display: inline-block;
-      background: #240f05;
-      color: var(--texto-suave);
-      border: 1.5px solid rgba(250, 204, 21, 0.7);
+      background: #fffdf9;
+      color: var(--texto-cacao);
+      border: 1.5px solid var(--borde-canela);
       border-radius: 999px;
       padding: 5px 12px;
       font-size: 0.8rem;
@@ -215,41 +216,55 @@
     }
 
     .sabor-pill input:checked + span {
-      background: var(--acento-amarillo);
-      color: var(--texto-oscuro);
-      border-color: var(--acento-amarillo);
-      box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+      background: var(--acento-caramelo);
+      color: #fffdf9;
+      border-color: var(--texto-espresso);
     }
 
     .producto-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid rgba(250, 204, 21, 0.22);
+      border-top: 1px solid var(--borde-suave);
       padding-top: 9px;
       gap: 8px;
     }
 
     .producto-precio {
-      color: var(--acento-amarillo);
+      color: #9a3412;
       font-weight: 700;
       font-size: 1.3rem;
     }
 
     .btn-add-prod {
-      background: var(--acento-amarillo);
-      color: var(--texto-oscuro);
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #fffdf9;
       border: none;
       border-radius: 9px;
       padding: 8px 14px;
       font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
-      box-shadow: 0 2px 0 #92400e;
+      box-shadow: 0 2px 0 #7c3f12;
     }
 
     .btn-add-prod:active {
       transform: translateY(1px);
+    }
+
+    .enlace-crepas {
+      color: #854d0e;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .nota-guia {
+      font-size: 0.82rem;
+      color: var(--texto-cacao);
+      text-align: center;
+      margin: 6px 0 12px;
+      font-weight: 600;
     }
 
     /* Volante de crepas */
@@ -257,7 +272,7 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
-      border-top: 2px solid rgba(250, 204, 21, 0.8);
+      border-top: 2px solid var(--borde-canela);
       padding-top: 12px;
       width: 100%;
       min-width: 0;
@@ -272,7 +287,7 @@
     }
 
     .col-salada {
-      border-right: 2px solid rgba(250, 204, 21, 0.8);
+      border-right: 2px solid var(--borde-canela);
       padding-right: 8px;
     }
 
@@ -286,29 +301,28 @@
     }
 
     .titulo-col small {
-      color: var(--texto-claro);
+      color: var(--texto-cacao);
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
       display: block;
     }
 
     .titulo-col strong {
-      color: var(--acento-amarillo);
+      color: var(--texto-espresso);
       font-size: 1.45rem;
       font-weight: 700;
-      text-shadow: 2px 2px 0 #140701;
     }
 
     .cinta-amarilla {
-      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
-      color: var(--texto-oscuro);
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #fffdf9;
       text-align: center;
       font-weight: 700;
       font-size: 0.82rem;
       padding: 5px 6px;
       border-radius: 8px;
       margin: 12px 0 6px 0;
-      box-shadow: 0 2px 0 #78350f;
+      box-shadow: 0 2px 0 #7c3f12;
       overflow-wrap: break-word;
     }
 
@@ -316,7 +330,7 @@
       display: block;
       text-align: center;
       font-size: 0.7rem;
-      color: var(--texto-suave);
+      color: var(--texto-cacao);
       margin-bottom: 7px;
       line-height: 1.25;
       overflow-wrap: break-word;
@@ -331,6 +345,7 @@
       user-select: none;
       font-size: 0.83rem;
       line-height: 1.25;
+      color: var(--texto-espresso);
       min-width: 0;
       max-width: 100%;
     }
@@ -350,7 +365,7 @@
     .check-item > span small {
       display: block;
       font-size: 0.72rem;
-      color: var(--texto-suave);
+      color: var(--texto-cacao);
     }
 
     .cuadrito {
@@ -358,16 +373,16 @@
       height: 20px;
       min-width: 20px;
       flex-shrink: 0;
-      background-color: var(--acento-amarillo);
-      border: 2px solid #1d0b02;
+      background-color: #fffdf9;
+      border: 2px solid var(--borde-canela);
       border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
       font-size: 1rem;
-      color: #dc2626;
-      transition: transform 0.1s;
+      color: #b91c1c;
+      transition: all 0.12s ease;
       margin-top: 1px;
     }
 
@@ -375,13 +390,18 @@
       transform: scale(0.92);
     }
 
+    .check-item input:checked + .cuadrito {
+      background-color: var(--acento-dorado);
+      border-color: var(--texto-espresso);
+    }
+
     .check-item input:checked + .cuadrito::after {
       content: "✖";
     }
 
     .check-item input:checked ~ span {
-      color: var(--acento-amarillo);
-      font-weight: 700;
+      color: #7c2d12;
+      font-weight: 800;
     }
 
     .grid-2 {
@@ -392,8 +412,8 @@
     }
 
     .extra-box {
-      background: rgba(250, 204, 21, 0.12);
-      border: 1.5px dashed rgba(250, 204, 21, 0.75);
+      background: var(--tarjeta-suave);
+      border: 1.5px dashed var(--borde-canela);
       border-radius: 10px;
       padding: 7px;
       margin-top: 8px;
@@ -401,8 +421,8 @@
     }
 
     .extra-box .precio-extra {
-      color: #fca5a5;
-      font-weight: 700;
+      color: #b91c1c;
+      font-weight: 800;
       font-size: 0.8rem;
       white-space: nowrap;
     }
@@ -446,8 +466,8 @@
 
     /* Forma de pago */
     .pago-box {
-      background: var(--tarjeta-oscura);
-      border: 2px solid rgba(250, 204, 21, 0.8);
+      background: var(--tarjeta-beige);
+      border: 2px solid var(--borde-suave);
       border-radius: 13px;
       padding: 10px;
       margin: 8px 0 10px;
@@ -458,7 +478,7 @@
       display: block;
       font-size: 0.86rem;
       font-weight: 700;
-      color: var(--acento-amarillo);
+      color: var(--texto-espresso);
       margin-bottom: 8px;
     }
 
@@ -481,9 +501,9 @@
     .pago-pill span {
       display: block;
       text-align: center;
-      background: #240f05;
-      color: var(--texto-suave);
-      border: 1.5px solid rgba(250, 204, 21, 0.7);
+      background: var(--tarjeta-suave);
+      color: var(--texto-cacao);
+      border: 1.5px solid var(--borde-canela);
       border-radius: 9px;
       padding: 8px 10px;
       font-size: 0.88rem;
@@ -492,9 +512,9 @@
     }
 
     .pago-pill input:checked + span {
-      background: var(--acento-amarillo);
-      color: var(--texto-oscuro);
-      border-color: var(--acento-amarillo);
+      background: var(--acento-caramelo);
+      color: #fffdf9;
+      border-color: var(--texto-espresso);
     }
 
     #efectivo-cambio-box {
@@ -503,8 +523,8 @@
 
     /* Mapa y ubicación */
     .mapa-box {
-      background: var(--tarjeta-oscura);
-      border: 2px solid rgba(250, 204, 21, 0.8);
+      background: var(--tarjeta-beige);
+      border: 2px solid var(--borde-suave);
       border-radius: 13px;
       padding: 10px;
       margin: 8px 0 10px;
@@ -523,13 +543,13 @@
     .mapa-titulo {
       font-size: 0.85rem;
       font-weight: 700;
-      color: var(--acento-amarillo);
+      color: var(--texto-espresso);
     }
 
     .btn-gps {
-      background: #1e3a8a;
-      color: var(--acento-amarillo);
-      border: 1.5px solid var(--borde-dorado);
+      background: var(--azul-etiqueta);
+      color: #fef3c7;
+      border: 1.5px solid var(--borde-canela);
       border-radius: 7px;
       padding: 6px 10px;
       font-size: 0.78rem;
@@ -541,13 +561,13 @@
       width: 100%;
       height: 220px;
       border-radius: 10px;
-      border: 1.5px solid var(--borde-dorado);
+      border: 1.5px solid var(--borde-canela);
       z-index: 1;
     }
 
     .coords-info {
       font-size: 0.78rem;
-      color: var(--texto-suave);
+      color: var(--texto-cacao);
       margin-top: 6px;
       overflow-wrap: break-word;
     }
@@ -563,15 +583,15 @@
       max-width: 100%;
       padding: 10px 11px;
       border-radius: 8px;
-      border: 1.5px solid rgba(250, 204, 21, 0.75);
-      background: #240f05;
-      color: var(--texto-claro);
+      border: 1.5px solid var(--borde-canela);
+      background: #fffdf9;
+      color: var(--texto-espresso);
       margin-bottom: 8px;
       font-size: 0.9rem;
     }
 
     input[type="text"]::placeholder {
-      color: rgba(243, 223, 184, 0.65);
+      color: #8c5a32;
     }
 
     .btn {
@@ -587,13 +607,13 @@
     }
 
     .btn-agregar {
-      background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
-      color: var(--texto-oscuro);
-      box-shadow: 0 3px 0 #78350f;
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #fffdf9;
+      box-shadow: 0 3px 0 #7c3f12;
     }
 
     .btn-whatsapp {
-      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
       color: #ffffff;
       font-size: 1.05rem;
       box-shadow: 0 3px 0 #14532d;
@@ -602,19 +622,21 @@
     .resumen-lista {
       margin: 10px 0;
       font-size: 0.86rem;
-      color: var(--texto-suave);
+      color: var(--texto-cacao);
       overflow-wrap: break-word;
     }
 
     .pedido-card {
-      background: #240f05;
+      background: var(--tarjeta-beige);
       padding: 9px 11px;
       border-radius: 8px;
       margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 3.5px solid var(--acento-amarillo);
+      border: 1px solid var(--borde-suave);
+      border-left: 4px solid var(--acento-caramelo);
+      color: var(--texto-espresso);
       gap: 8px;
       min-width: 0;
     }
@@ -639,7 +661,7 @@
       text-align: right;
       font-size: 1.2rem;
       font-weight: 700;
-      color: var(--acento-amarillo);
+      color: #9a3412;
       margin: 8px 0;
     }
   </style>
@@ -735,7 +757,7 @@
     </div>
 
     <div style="text-align:center; margin-top:14px;">
-      <a href="#seccion-crepas" style="color:#facc15; font-size:0.9rem; font-weight:700;">
+      <a href="#seccion-crepas" class="enlace-crepas">
         👇 Ir directo a armar tu crepa personalizada
       </a>
     </div>
@@ -744,8 +766,8 @@
   <!-- 2. VOLANTE INTERACTIVO PARA ARMAR CREPAS -->
   <div class="panel" id="seccion-crepas">
     <div class="titulo-seccion">🥞 ARMA TU CREPA (TACHA TUS OPCIONES)</div>
-    <p style="font-size:0.8rem; color:#f3dfb8; text-align:center; margin:6px 0 12px;">
-      👆 Toca los cuadritos amarillos para marcar tu crepa
+    <p class="nota-guia">
+      👆 Toca los cuadritos para marcar tu crepa
     </p>
 
     <div class="columnas">
