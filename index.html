@@ -171,6 +171,23 @@
       overflow-wrap: break-word;
     }
 
+    /* Selector de toque / cobertura en Frappés */
+    .toque-frappe-box {
+      background: var(--tarjeta-suave);
+      border: 1px solid var(--borde-suave);
+      border-radius: 10px;
+      padding: 8px 10px;
+      min-width: 0;
+    }
+
+    .toque-frappe-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--texto-cacao);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
     /* Selector de sabores dentro del cuadro de Frappés */
     .sabores-box {
       background: var(--tarjeta-suave);
@@ -688,7 +705,20 @@
           <div class="producto-emoji">🥤</div>
           <div>
             <div class="producto-nombre">Frappés</div>
-            <div class="producto-desc">Refresca tu antojo • Con crema batida y barquillo</div>
+          </div>
+        </div>
+
+        <div class="toque-frappe-box">
+          <span class="toque-frappe-label">✨ Elige tu frappé con:</span>
+          <div class="sabores-opciones">
+            <label class="sabor-pill">
+              <input type="radio" name="toque-frappe" value="Caramelo" checked>
+              <span>Caramelo</span>
+            </label>
+            <label class="sabor-pill">
+              <input type="radio" name="toque-frappe" value="Chocolate Hershey">
+              <span>Chocolate Hershey</span>
+            </label>
           </div>
         </div>
 
@@ -995,12 +1025,14 @@
 
   function agregarFrappe() {
     const saborSeleccionado = document.querySelector('input[name="sabor-frappe"]:checked');
+    const toqueSeleccionado = document.querySelector('input[name="toque-frappe"]:checked');
     const sabor = saborSeleccionado ? saborSeleccionado.value : "Moca";
+    const toque = toqueSeleccionado ? toqueSeleccionado.value : "Caramelo";
 
     carrito.push({
       tipo: "catalogo",
-      textoVisual: `<strong>🥤 Frappé (${sabor})</strong> ($75)`,
-      textoWhatsApp: `*Frappé sabor ${sabor}* ($75)`,
+      textoVisual: `<strong>🥤 Frappé (${sabor} • con ${toque})</strong> ($75)`,
+      textoWhatsApp: `*Frappé sabor ${sabor}* (con *${toque}*) ($75)`,
       precio: 75
     });
     renderCarrito();
