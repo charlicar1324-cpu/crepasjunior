@@ -10,25 +10,35 @@
       box-sizing: border-box;
       font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
     }
-    body {
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
       background-color: #1a0d06;
       color: #ffffff;
       margin: 0;
-      padding: 15px;
+      padding: 0;
+    }
+    body {
+      padding: 12px 10px;
       display: flex;
       justify-content: center;
     }
     .app-container {
       max-width: 560px;
       width: 100%;
+      min-width: 0;
     }
     .panel {
       background: radial-gradient(circle at top, #5d2906 0%, #240e03 70%, #160802 100%);
       border: 3px solid #ffd600;
       border-radius: 18px;
-      padding: 20px 15px;
+      padding: 18px 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.7);
       margin-bottom: 18px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow: hidden;
     }
     .header {
       text-align: center;
@@ -41,6 +51,7 @@
     .logo-img {
       width: 150px;
       height: 150px;
+      max-width: 100%;
       object-fit: cover;
       border-radius: 50%;
       border: 3px solid #ffd600;
@@ -78,7 +89,7 @@
     /* Tarjetas del catálogo */
     .catalogo-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 12px;
     }
     .producto-card {
@@ -89,16 +100,19 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      min-width: 0;
     }
     .producto-top {
       display: flex;
       align-items: center;
       gap: 12px;
+      min-width: 0;
     }
     .producto-emoji {
       font-size: 2.3rem;
       min-width: 48px;
       text-align: center;
+      flex-shrink: 0;
     }
     .producto-nombre {
       font-size: 1.15rem;
@@ -109,6 +123,7 @@
       font-size: 0.82rem;
       color: #ffe082;
       margin-top: 2px;
+      overflow-wrap: break-word;
     }
     /* Selector de sabores dentro del cuadro de Frappés */
     .sabores-box {
@@ -116,6 +131,7 @@
       border: 1px dashed #ffd600;
       border-radius: 10px;
       padding: 8px 10px;
+      min-width: 0;
     }
     .sabores-label {
       display: block;
@@ -158,6 +174,7 @@
       align-items: center;
       border-top: 1px solid rgba(255, 214, 0, 0.25);
       padding-top: 8px;
+      gap: 8px;
     }
     .producto-precio {
       color: #ffd600;
@@ -180,14 +197,26 @@
     /* Volante de crepas */
     .columnas {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
       border-top: 2px solid #ffd600;
       padding-top: 12px;
+      width: 100%;
+      min-width: 0;
+    }
+    .col-salada,
+    .col-dulce {
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
     }
     .col-salada {
       border-right: 2px solid #ffd600;
-      padding-right: 10px;
+      padding-right: 8px;
+    }
+    .col-dulce {
+      padding-left: 2px;
     }
     .titulo-col {
       text-align: center;
@@ -195,12 +224,12 @@
     }
     .titulo-col small {
       color: #fff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       display: block;
     }
     .titulo-col strong {
       color: #ffd600;
-      font-size: 1.6rem;
+      font-size: 1.45rem;
       text-shadow: 2px 2px 0 #000;
     }
     .cinta-amarilla {
@@ -208,36 +237,54 @@
       color: #1a0d06;
       text-align: center;
       font-weight: 900;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       padding: 4px 6px;
       border-radius: 6px;
       margin: 12px 0 6px 0;
-      transform: rotate(-1deg);
       box-shadow: 2px 2px 0 #000;
+      overflow-wrap: break-word;
     }
     .sub-nota {
       display: block;
       text-align: center;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: #ffe082;
       margin-bottom: 6px;
+      line-height: 1.25;
+      overflow-wrap: break-word;
     }
     .check-item {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      align-items: flex-start;
+      gap: 6px;
       margin-bottom: 7px;
       cursor: pointer;
       user-select: none;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      min-width: 0;
+      max-width: 100%;
     }
     .check-item input {
       display: none;
     }
+    .check-item > span,
+    .check-item > span small {
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .check-item > span small {
+      display: block;
+      font-size: 0.72rem;
+      color: #ffe082;
+    }
     .cuadrito {
-      width: 22px;
-      height: 22px;
-      min-width: 22px;
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      flex-shrink: 0;
       background-color: #ffd600;
       border: 2px solid #000;
       border-radius: 5px;
@@ -245,9 +292,10 @@
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #d50000;
       transition: transform 0.1s;
+      margin-top: 1px;
     }
     .check-item:active .cuadrito {
       transform: scale(0.9);
@@ -261,8 +309,9 @@
     }
     .grid-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 4px;
+      min-width: 0;
     }
     .extra-box {
       background: rgba(255, 214, 0, 0.15);
@@ -270,12 +319,52 @@
       border-radius: 8px;
       padding: 6px;
       margin-top: 8px;
+      min-width: 0;
     }
     .extra-box .precio-extra {
       color: #ff5252;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
     }
+
+    @media (max-width: 430px) {
+      body {
+        padding: 8px 6px;
+      }
+      .panel {
+        padding: 14px 8px;
+        border-radius: 14px;
+      }
+      .columnas {
+        gap: 6px;
+      }
+      .col-salada {
+        padding-right: 6px;
+      }
+      .titulo-col strong {
+        font-size: 1.25rem;
+      }
+      .cinta-amarilla {
+        font-size: 0.74rem;
+        padding: 4px 4px;
+      }
+      .check-item {
+        font-size: 0.75rem;
+        gap: 5px;
+      }
+      .cuadrito {
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+        font-size: 0.9rem;
+      }
+      .grid-2 {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2px;
+      }
+    }
+
     /* Forma de pago */
     .pago-box {
       background: rgba(0, 0, 0, 0.45);
@@ -283,6 +372,7 @@
       border-radius: 12px;
       padding: 10px;
       margin: 8px 0 10px;
+      min-width: 0;
     }
     .pago-titulo {
       display: block;
@@ -293,12 +383,13 @@
     }
     .pago-opciones {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
     }
     .pago-pill {
       cursor: pointer;
       user-select: none;
+      min-width: 0;
     }
     .pago-pill input {
       display: none;
@@ -330,6 +421,7 @@
       border-radius: 12px;
       padding: 10px;
       margin: 8px 0 10px;
+      min-width: 0;
     }
     .mapa-header {
       display: flex;
@@ -365,6 +457,7 @@
       font-size: 0.78rem;
       color: #ffe082;
       margin-top: 6px;
+      overflow-wrap: break-word;
     }
     /* Carrito y envío */
     .acciones {
@@ -373,9 +466,11 @@
       padding: 14px;
       border-radius: 12px;
       border: 1px solid #ffd600;
+      min-width: 0;
     }
     input[type="text"] {
       width: 100%;
+      max-width: 100%;
       padding: 9px;
       border-radius: 6px;
       border: 1px solid #ffd600;
@@ -385,6 +480,7 @@
     }
     .btn {
       width: 100%;
+      max-width: 100%;
       padding: 12px;
       border: none;
       border-radius: 8px;
@@ -406,6 +502,7 @@
       margin: 10px 0;
       font-size: 0.85rem;
       color: #ffe082;
+      overflow-wrap: break-word;
     }
     .pedido-card {
       background: #2b1408;
@@ -417,6 +514,11 @@
       align-items: center;
       border-left: 3px solid #ffd600;
       gap: 8px;
+      min-width: 0;
+    }
+    .pedido-card > div {
+      min-width: 0;
+      overflow-wrap: break-word;
     }
     .btn-del {
       background: #d50000;
@@ -425,6 +527,7 @@
       border-radius: 4px;
       padding: 4px 8px;
       cursor: pointer;
+      flex-shrink: 0;
     }
     .total-txt {
       text-align: right;
@@ -572,7 +675,7 @@
       </div>
 
       <!-- COLUMNA DERECHA: DULCE -->
-      <div>
+      <div class="col-dulce">
         <div class="titulo-col">
           <small>Crepa</small>
           <strong>Dulce</strong>
