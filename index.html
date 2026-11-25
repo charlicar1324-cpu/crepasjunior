@@ -535,7 +535,7 @@
       }
     }
 
-    /* Forma de pago */
+    /* Forma de pago y tipo de entrega */
     .pago-box {
       background: var(--tarjeta-beige);
       border: 2px solid var(--borde-suave);
@@ -826,7 +826,7 @@
 
     <div class="especiales-crepa-box">
       <span class="especial-titulo">🥣🧇 Opciones Bowl Crepa y Waffle:</span>
-      <span class="especial-sub">También puedes combinarlos con los ingredientes dulces de abajo (untable, fruta, topping, extras y baño).</span>
+      <span class="especial-sub">También puedes aramarlos con los ingredientes dulces de abajo (untable, fruta, topping y extras).</span>
       <div class="especiales-grid">
         <label class="check-item especial-item">
           <input type="checkbox" class="especial-base" value="Bowl Crepa" data-precio="75">
@@ -961,7 +961,22 @@
       <div class="total-txt" id="total-pedido">Total: $0</div>
 
       <input type="text" id="cliente-nombre" placeholder="Tu nombre">
-      <input type="text" id="cliente-direccion" placeholder="Calle, número o referencia (o 'Paso a recoger')">
+
+      <div class="pago-box">
+        <span class="pago-titulo">🛵 Tipo de entrega:</span>
+        <div class="pago-opciones">
+          <label class="pago-pill">
+            <input type="radio" name="tipo-entrega" value="A domicilio" checked onchange="toggleTipoEntrega()">
+            <span>🛵 A domicilio</span>
+          </label>
+          <label class="pago-pill">
+            <input type="radio" name="tipo-entrega" value="Paso al puesto (Físico)" onchange="toggleTipoEntrega()">
+            <span>🏪 Paso al puesto</span>
+          </label>
+        </div>
+      </div>
+
+      <input type="text" id="cliente-direccion" placeholder="Calle, número o referencia">
       <input type="text" id="cliente-notas" placeholder="Notas para cocina (opcional, ej. sin azúcar / extra servilletas)">
 
       <div class="pago-box">
@@ -1006,6 +1021,21 @@
     const metodo = document.querySelector('input[name="forma-pago"]:checked')?.value;
     const cambioBox = document.getElementById('efectivo-cambio-box');
     cambioBox.style.display = metodo === "Efectivo" ? "block" : "none";
+  }
+
+  function toggleTipoEntrega() {
+    const tipo = document.querySelector('input[name="tipo-entrega"]:checked')?.value;
+    const dirInput = document.getElementById('cliente-direccion');
+    const mapaBox = document.querySelector('.mapa-box');
+
+    if (tipo === "A domicilio") {
+      dirInput.style.display = "block";
+      mapaBox.style.display = "block";
+      setTimeout(() => mapa.invalidateSize(), 150);
+    } else {
+      dirInput.style.display = "none";
+      mapaBox.style.display = "none";
+    }
   }
 
   const LAT_INICIAL = 19.2826;
@@ -1072,6 +1102,7 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     togglePagoEfectivo();
+    toggleTipoEntrega();
     usarUbicacionActual(false);
   });
 
@@ -1309,6 +1340,7 @@
     }
 
     const nombre = document.getElementById('cliente-nombre').value.trim();
+    const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked')?.value || "A domicilio";
     const direccion = document.getElementById('cliente-direccion').value.trim();
     const notas = document.getElementById('cliente-notas').value.trim();
     const formaPago = document.querySelector('input[name="forma-pago"]:checked')?.value || "Efectivo";
@@ -1322,14 +1354,17 @@
     let total = 0;
     let mensaje = `*PEDIDO JUNIOR'S CREPERIE*\n==============================\n`;
     mensaje += `*Cliente:* ${nombre}\n`;
-    if (direccion) mensaje += `*Entrega:* ${direccion}\n`;
+    mensaje += `*Tipo de entrega:* ${tipoEntrega}\n`;
+    if (tipoEntrega === "A domicilio") {
+      if (direccion) mensaje += `*Dirección:* ${direccion}\n`;
+      if (ubicacionSeleccionada) {
+        const linkMaps = `https://www.google.com/maps?q=${ubicacionSeleccionada.lat},${ubicacionSeleccionada.lng}`;
+        mensaje += `*Ubicación GPS:* ${linkMaps}\n`;
+        mensaje += `*Coordenadas:* ${ubicacionSeleccionada.lat}, ${ubicacionSeleccionada.lng}\n`;
+      }
+    }
     mensaje += `*Pago:* ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (Paga con ${pagoCon})` : ""}\n`;
     if (notas) mensaje += `*Notas cocina:* ${notas}\n`;
-    if (ubicacionSeleccionada) {
-      const linkMaps = `https://www.google.com/maps?q=${ubicacionSeleccionada.lat},${ubicacionSeleccionada.lng}`;
-      mensaje += `*Ubicación GPS:* ${linkMaps}\n`;
-      mensaje += `*Coordenadas:* ${ubicacionSeleccionada.lat}, ${ubicacionSeleccionada.lng}\n`;
-    }
     mensaje += `==============================\n\n`;
 
     carrito.forEach((item, idx) => {
