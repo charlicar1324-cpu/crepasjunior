@@ -636,7 +636,8 @@
       min-width: 0;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       max-width: 100%;
       padding: 10px 11px;
@@ -648,7 +649,8 @@
       font-size: 0.9rem;
     }
 
-    input[type="text"]::placeholder {
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
       color: #8c5a32;
     }
 
@@ -733,6 +735,67 @@
       font-size: 0.86rem;
       font-weight: 700;
       display: none;
+    }
+
+    /* Acceso discreto a cocina */
+    .footer-chef {
+      text-align: center;
+      margin-top: 14px;
+      margin-bottom: 10px;
+    }
+
+    .btn-chef-link {
+      background: transparent;
+      border: 1.5px dashed var(--borde-canela);
+      color: var(--texto-cacao);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-chef-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(43, 20, 7, 0.65);
+      z-index: 1200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-chef-overlay.abierto {
+      display: flex;
+    }
+
+    .modal-chef-card {
+      background: var(--tarjeta-beige);
+      border: 2.5px solid var(--borde-canela);
+      border-radius: 16px;
+      padding: 18px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(43, 20, 7, 0.3);
+    }
+
+    .modal-chef-card h3 {
+      margin: 0 0 6px;
+      color: var(--texto-espresso);
+    }
+
+    .modal-chef-card p {
+      margin: 0 0 12px;
+      font-size: 0.82rem;
+      color: var(--texto-cacao);
+    }
+
+    .modal-chef-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
 
     /* Chatbot flotante con estética Junior's Creperie */
@@ -1132,6 +1195,26 @@
     </div>
   </div>
 
+  <!-- BOTÓN DISCRETO PARA ENTRAR A COCINA -->
+  <div class="footer-chef">
+    <button type="button" class="btn-chef-link" onclick="abrirModalChef()">👨‍🍳 Acceso Cocina</button>
+  </div>
+
+</div>
+
+<!-- MODAL CONTRASEÑA CHEF -->
+<div id="modal-chef" class="modal-chef-overlay">
+  <div class="modal-chef-card">
+    <h3>👨‍🍳 Acceso a Cocina</h3>
+    <p>Ingresa la contraseña del chef para abrir el panel.</p>
+    <form onsubmit="verificarClaveChef(event)">
+      <input type="password" id="clave-chef-input" placeholder="Contraseña..." required />
+      <div class="modal-chef-btns">
+        <button type="button" class="btn" style="margin:0; background:#e5e7eb; color:#374151;" onclick="cerrarModalChef()">Cancelar</button>
+        <button type="submit" class="btn btn-agregar" style="margin:0;">Entrar</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- CHATBOT FLOTANTE -->
@@ -1160,11 +1243,12 @@
   // CONFIGURACIÓN SUPABASE Y NEGOCIO
   // ==========================================
   const SUPABASE_URL = 'https://fhaxdrwgjvolzyyrykqv.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_SZWG4bLKKN9lcJi_hTRe9Q_LYOlhjse'; // <-- Pega tu sb_publishable_...
+  const SUPABASE_KEY = 'sb_publishable_SZWG4bLKKN9lcJi_hTRe9Q_LYOlhjse';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const TELEFONO_NEGOCIO = "7293610746";
   const PRECIO_CREPA_SALADA = 80;
+  const CLAVE_COCINA = "1234"; // <-- Cambia aquí la contraseña para entrar a cocina.html
   let carrito = [];
 
   let sesionId = localStorage.getItem('juniors_sesion_id');
@@ -1173,512 +1257,28 @@
     localStorage.setItem('juniors_sesion_id', sesionId);
   }
 
-  function togglePagoEfectivo() {
-    const metodo = document.querySelector('input[name="forma-pago"]:checked')?.value;
-    const cambioBox = document.getElementById('efectivo-cambio-box');
-    cambioBox.style.display = metodo === "Efectivo" ? "block" : "none";
-  }
-
-  function toggleTipoEntrega() {
-    const tipo = document.querySelector('input[name="tipo-entrega"]:checked')?.value;
-    const dirInput = document.getElementById('cliente-direccion');
-    const mapaBox = document.querySelector('.mapa-box');
-
-    if (tipo === "A domicilio") {
-      dirInput.style.display = "block";
-      mapaBox.style.display = "block";
-      setTimeout(() => mapa.invalidateSize(), 150);
-    } else {
-      dirInput.style.display = "none";
-      mapaBox.style.display = "none";
-    }
-  }
-
-  const LAT_INICIAL = 19.2826;
-  const LNG_INICIAL = -99.6557;
-  let ubicacionSeleccionada = null;
-
-  const mapa = L.map('mapa-entrega').setView([LAT_INICIAL, LNG_INICIAL], 14);
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri',
-    maxZoom: 19
-  }).addTo(mapa);
-
-  const marcador = L.marker([LAT_INICIAL, LNG_INICIAL], { draggable: true }).addTo(mapa);
-
-  function actualizarUbicacion(lat, lng, zoom = null) {
-    const latNum = Number(lat.toFixed(6));
-    const lngNum = Number(lng.toFixed(6));
-    ubicacionSeleccionada = { lat: latNum, lng: lngNum };
-    marcador.setLatLng([latNum, lngNum]);
-    if (zoom) {
-      mapa.setView([latNum, lngNum], zoom);
-    } else {
-      mapa.panTo([latNum, lngNum]);
-    }
-    document.getElementById('texto-coordenadas').innerText =
-      `📍 Ubicación exacta: ${latNum}, ${lngNum} (se enviará enlace de Google Maps)`;
-  }
-
-  mapa.on('click', (e) => {
-    actualizarUbicacion(e.latlng.lat, e.latlng.lng);
-  });
-
-  marcador.on('dragend', () => {
-    const pos = marcador.getLatLng();
-    actualizarUbicacion(pos.lat, pos.lng);
-  });
-
-  function usarUbicacionActual(mostrarAlerta = false) {
-    if (!navigator.geolocation) {
-      if (mostrarAlerta) {
-        alert("Tu navegador no soporta geolocalización. Puedes tocar el mapa para poner el pin.");
-      }
-      return;
-    }
-    document.getElementById('texto-coordenadas').innerText = "🎯 Obteniendo tu ubicación exacta...";
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        actualizarUbicacion(pos.coords.latitude, pos.coords.longitude, 17);
-      },
-      (err) => {
-        document.getElementById('texto-coordenadas').innerText =
-          "Ubicación no disponible. Activa la ubicación en tu dispositivo/navegador o toca el mapa.";
-        if (mostrarAlerta) {
-          if (err.code === 1) {
-            alert("Permiso denegado o ubicación desactivada en el sistema. Actívala y vuelve a intentar.");
-          } else {
-            alert("No se pudo obtener tu GPS en este momento. Toca el mapa para marcar el punto.");
-          }
-        }
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    togglePagoEfectivo();
-    toggleTipoEntrega();
-    usarUbicacionActual(false);
-    cargarHistorialChat();
-  });
-
-  function agregarFrappe() {
-    const saborSeleccionado = document.querySelector('input[name="sabor-frappe"]:checked');
-    const toqueSeleccionado = document.querySelector('input[name="toque-frappe"]:checked');
-    const sabor = saborSeleccionado ? saborSeleccionado.value : "Moca";
-    const toque = toqueSeleccionado ? toqueSeleccionado.value : "Caramelo";
-
-    carrito.push({
-      tipo: "catalogo",
-      textoVisual: `<strong>🥤 Frappé (${sabor} • con ${toque})</strong> ($75)`,
-      textoWhatsApp: `*Frappé sabor ${sabor}* (con *${toque}*) ($75)`,
-      precio: 75
-    });
-    renderCarrito();
-  }
-
-  document.querySelectorAll('.aderezo').forEach(chk => {
-    chk.addEventListener('change', () => {
-      const seleccionados = document.querySelectorAll('.aderezo:checked');
-      if (seleccionados.length > 2) {
-        chk.checked = false;
-        alert("Solo puedes elegir hasta 2 aderezos para tu crepa salada.");
-      }
-    });
-  });
-
-  function obtenerValores(selector) {
-    return Array.from(document.querySelectorAll(selector + ':checked')).map(el => el.value);
-  }
-
-  function construirDetalleDulce(etiquetaBase, precioBase, untablesIncluidos, untables, frutas, toppings, kinder, helado, banos) {
-    const untablesExtraCount = Math.max(0, untables.length - untablesIncluidos);
-    const costoUntablesExtra = untablesExtraCount * 5;
-
-    const toppingsExtraCount = Math.max(0, toppings.length - 1);
-    const costoToppingsExtra = toppingsExtraCount * 5;
-
-    const costoKinder = kinder ? 17 : 0;
-    const costoHelado = helado ? 17 : 0;
-    const subtotal = precioBase + costoUntablesExtra + costoToppingsExtra + costoKinder + costoHelado;
-
-    let detalles = [`  • Base: ${etiquetaBase}`];
-    if (untables.length) {
-      detalles.push(
-        costoUntablesExtra > 0
-          ? `  • Untable: ${untables.join(" + ")} (+$${costoUntablesExtra} extra)`
-          : `  • Untable: ${untables.join(" + ")}`
-      );
-    }
-    if (frutas.length) detalles.push(`  • Fruta: ${frutas.join(" + ")}`);
-    if (toppings.length) {
-      detalles.push(
-        toppingsExtraCount > 0
-          ? `  • Topping: ${toppings.join(", ")} (+$${costoToppingsExtra} extra)`
-          : `  • Topping: ${toppings.join(", ")}`
-      );
-    }
-
-    let extrasLista = [];
-    if (kinder) extrasLista.push("Kinder Delice (+$17)");
-    if (helado) extrasLista.push("Helado (+$17)");
-    if (extrasLista.length) detalles.push(`  • Extra: ${extrasLista.join(" + ")}`);
-    if (banos.length) detalles.push(`  • Baño: ${banos.join(", ")}`);
-
-    let resumenIngredientes = [];
-    if (untables.length) {
-      resumenIngredientes.push(
-        costoUntablesExtra > 0
-          ? `${untables.join(" + ")} (+$${costoUntablesExtra})`
-          : untables.join(" + ")
-      );
-    }
-    if (frutas.length) resumenIngredientes.push(`Fruta: ${frutas.join(" + ")}`);
-    if (toppings.length) resumenIngredientes.push(`Topping: ${toppings.join(", ")}`);
-    if (extrasLista.length) resumenIngredientes.push(extrasLista.join(", "));
-    if (banos.length) resumenIngredientes.push(`Baño: ${banos.join(", ")}`);
-
-    const textoVisual = `${etiquetaBase}${resumenIngredientes.length ? ` (${resumenIngredientes.join(" • ")})` : ""} ($${subtotal})`;
-    const textoWhatsApp = `*${etiquetaBase}* ($${subtotal})\n${detalles.join("\n")}`;
-
-    return { subtotal, textoVisual, textoWhatsApp };
-  }
-
-  function agregarCrepa() {
-    const especialesChecked = Array.from(document.querySelectorAll('.especial-base:checked'));
-    const saladas = obtenerValores('input[name="salada"]');
-    const aderezos = obtenerValores('.aderezo');
-    const dulceTipo = obtenerValores('input[name="dulce_tipo"]');
-    const untables = obtenerValores('.untable');
-    const frutas = obtenerValores('.fruta');
-    const toppings = obtenerValores('.topping');
-    const kinder = document.getElementById('kinder-delice').checked;
-    const helado = document.getElementById('extra-helado').checked;
-    const banos = obtenerValores('.baño');
-
-    const tieneIngredientesDulces = untables.length > 0 || frutas.length > 0 || toppings.length > 0 || kinder || helado || banos.length > 0;
-    const hayEspecial = especialesChecked.length > 0;
-    const haySalada = saladas.length > 0 || aderezos.length > 0;
-    const hayCrepaDulce = dulceTipo.length > 0 || (!hayEspecial && tieneIngredientesDulces);
-
-    if (!hayEspecial && !haySalada && !hayCrepaDulce) {
-      alert("Tacha al menos una opción en el volante antes de agregar.");
-      return;
-    }
-
-    let precioTotalItem = 0;
-    let lineasVisual = [];
-    let bloquesWA = [];
-
-    if (hayEspecial) {
-      especialesChecked.forEach((el, idx) => {
-        const nombreEsp = el.value;
-        let precioBaseEsp = Number(el.dataset.precio || 0);
-        let etiquetaEsp = nombreEsp === "Bowl Crepa" ? "🥣 Bowl Crepa" : "🧇 Waffle";
-
-        const aplicarDulceAqui = !hayCrepaDulce && idx === 0;
-        const frutasAplicadas = aplicarDulceAqui ? frutas : [];
-
-        if (nombreEsp === "Waffle") {
-          const esDosFrutas = dulceTipo.includes("Combinada") || frutasAplicadas.length >= 2;
-          precioBaseEsp = esDosFrutas ? 65 : 55;
-          etiquetaEsp = esDosFrutas ? "🧇 Waffle (2 frutas)" : "🧇 Waffle (1 fruta)";
-        }
-
-        const untablesIncluidosEsp = (dulceTipo.includes("Combinada") || untables.includes("Combinada Especial")) ? 2 : 1;
-
-        const armado = construirDetalleDulce(
-          etiquetaEsp,
-          precioBaseEsp,
-          untablesIncluidosEsp,
-          aplicarDulceAqui ? untables : [],
-          frutasAplicadas,
-          aplicarDulceAqui ? toppings : [],
-          aplicarDulceAqui ? kinder : false,
-          aplicarDulceAqui ? helado : false,
-          aplicarDulceAqui ? banos : []
-        );
-
-        precioTotalItem += armado.subtotal;
-        lineasVisual.push(armado.textoVisual);
-        bloquesWA.push(armado.textoWhatsApp);
-      });
-    }
-
-    if (haySalada) {
-      const tipoSalada = saladas.join(", ") || "Base salada";
-      let detallesSalada = [`  • Base: ${tipoSalada}`];
-      if (aderezos.length) detallesSalada.push(`  • Aderezos: ${aderezos.join(", ")}`);
-
-      precioTotalItem += PRECIO_CREPA_SALADA;
-      lineasVisual.push(`Crepa Salada: ${tipoSalada}${aderezos.length ? ` | Aderezos: ${aderezos.join(", ")}` : ""} ($${PRECIO_CREPA_SALADA})`);
-      bloquesWA.push(`*Crepa Salada* ($${PRECIO_CREPA_SALADA})\n${detallesSalada.join("\n")}`);
-    }
-
-    if (hayCrepaDulce) {
-      const esCombinada = dulceTipo.includes("Combinada") || frutas.length >= 2;
-      const baseDulce = esCombinada ? 80 : 70;
-      const etiquetaTipo = esCombinada ? "Crepa Dulce Combinada" : "Crepa Dulce Sencilla";
-      const untablesIncluidos = (esCombinada || untables.includes("Combinada Especial")) ? 2 : 1;
-
-      const armadoDulce = construirDetalleDulce(
-        etiquetaTipo,
-        baseDulce,
-        untablesIncluidos,
-        untables,
-        frutas,
-        toppings,
-        kinder,
-        helado,
-        banos
-      );
-
-      precioTotalItem += armadoDulce.subtotal;
-      lineasVisual.push(armadoDulce.textoVisual);
-      bloquesWA.push(armadoDulce.textoWhatsApp);
-    }
-
-    carrito.push({
-      tipo: "crepa",
-      textoVisual: `<strong>${lineasVisual.join(" / ")}</strong> ($${precioTotalItem})`,
-      textoWhatsApp: bloquesWA.join("\n\n"),
-      precio: precioTotalItem
-    });
-
-    document.querySelectorAll('#seccion-crepas input[type="checkbox"]').forEach(c => c.checked = false);
-    renderCarrito();
-  }
-
-  function eliminarItem(i) {
-    carrito.splice(i, 1);
-    renderCarrito();
-  }
-
-  function renderCarrito() {
-    const contenedor = document.getElementById('lista-pedidos');
-    const totalEl = document.getElementById('total-pedido');
-
-    if (carrito.length === 0) {
-      contenedor.innerHTML = "Aún no agregas productos ni crepas.";
-      totalEl.innerText = "Total: $0";
-      return;
-    }
-
-    let total = 0;
-    contenedor.innerHTML = carrito.map((item, i) => {
-      total += item.precio;
-      return `
-        <div class="pedido-card">
-          <div>${item.textoVisual}</div>
-          <button class="btn-del" onclick="eliminarItem(${i})">X</button>
-        </div>
-      `;
-    }).join("");
-
-    totalEl.innerText = `Total: $${total}`;
-  }
-
-  async function enviarWhatsApp() {
-    const limpio = TELEFONO_NEGOCIO.replace(/\D/g, "");
-    if (!limpio || limpio.includes("X")) {
-      alert("Configura primero el número de WhatsApp del negocio en TELEFONO_NEGOCIO.");
-      return;
-    }
-
-    const algoMarcado = document.querySelectorAll('#seccion-crepas input[type="checkbox"]:checked').length > 0;
-    if (algoMarcado) {
-      agregarCrepa();
-    }
-
-    if (carrito.length === 0) {
-      alert("Agrega un producto del catálogo o arma una crepa antes de enviar.");
-      return;
-    }
-
-    const nombre = document.getElementById('cliente-nombre').value.trim();
-    const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked')?.value || "A domicilio";
-    const direccion = document.getElementById('cliente-direccion').value.trim();
-    const notas = document.getElementById('cliente-notas').value.trim();
-    const formaPago = document.querySelector('input[name="forma-pago"]:checked')?.value || "Efectivo";
-    const pagoCon = document.getElementById('pago-con').value.trim();
-
-    if (!nombre) {
-      alert("Escribe tu nombre para identificar tu pedido.");
-      return;
-    }
-
-    const folio = "JC-" + Math.floor(100 + Math.random() * 900);
-    let total = 0;
-    let resumenItems = [];
-
-    carrito.forEach((item) => {
-      total += item.precio;
-      resumenItems.push(item.textoVisual.replace(/<[^>]*>/g, ""));
-    });
-
-    const detalleDB = [
-      resumenItems.join(" | "),
-      direccion ? `Dir: ${direccion}` : null,
-      notas ? `Notas: ${notas}` : null,
-      `Pago: ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (con ${pagoCon})` : ""}`
-    ].filter(Boolean).join(" • ");
-
-    const { error } = await supabaseClient.from('pedidos').insert([{
-      folio,
-      cliente_nombre: nombre,
-      tipo_entrega: tipoEntrega,
-      detalle: detalleDB,
-      total,
-      estado: 'Recibido'
-    }]);
-
-    if (error) {
-      console.error("Error guardando pedido en Supabase:", error.message);
-    }
-
-    const avisoFolio = document.getElementById('folio-aviso');
-    avisoFolio.style.display = 'block';
-    avisoFolio.innerHTML = `✅ Pedido <b>${folio}</b> registrado. Escríbelo en el chat 💬 para rastrear su estado en vivo.`;
-
-    let mensaje = `*PEDIDO JUNIOR'S CREPERIE*\n*Folio:* ${folio}\n==============================\n`;
-    mensaje += `*Cliente:* ${nombre}\n`;
-    mensaje += `*Tipo de entrega:* ${tipoEntrega}\n`;
-    if (tipoEntrega === "A domicilio") {
-      if (direccion) mensaje += `*Dirección:* ${direccion}\n`;
-      if (ubicacionSeleccionada) {
-        const linkMaps = `https://www.google.com/maps?q=${ubicacionSeleccionada.lat},${ubicacionSeleccionada.lng}`;
-        mensaje += `*Ubicación GPS:* ${linkMaps}\n`;
-        mensaje += `*Coordenadas:* ${ubicacionSeleccionada.lat}, ${ubicacionSeleccionada.lng}\n`;
-      }
-    }
-    mensaje += `*Pago:* ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (Paga con ${pagoCon})` : ""}\n`;
-    if (notas) mensaje += `*Notas cocina:* ${notas}\n`;
-    mensaje += `==============================\n\n`;
-
-    carrito.forEach((item, idx) => {
-      mensaje += `*${idx + 1}.* ${item.textoWhatsApp}\n\n`;
-    });
-
-    mensaje += `==============================\n`;
-    mensaje += `*TOTAL A COBRAR: $${total}*\n`;
-
-    const url = `https://wa.me/${limpio}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
-  }
-
   // ==========================================
-  // CHATBOT EN TIEMPO REAL
+  // ACCESO A COCINA CON CONTRASEÑA
   // ==========================================
-  function toggleChat() {
-    const win = document.getElementById('chat-ventana');
-    win.classList.toggle('abierto');
-    if (win.classList.contains('abierto')) {
-      document.getElementById('chat-input').focus();
+  function abrirModalChef() {
+    if (sessionStorage.getItem('juniors_chef_auth') === 'ok') {
+      window.location.href = 'cocina.html';
+      return;
     }
+    document.getElementById('modal-chef').classList.add('abierto');
+    setTimeout(() => document.getElementById('clave-chef-input').focus(), 100);
   }
 
-  function pintarBurbuja(remitente, texto) {
-    const cont = document.getElementById('chat-mensajes');
-    const div = document.createElement('div');
-    if (remitente === 'cliente') {
-      div.className = 'burbuja burbuja-cliente';
-      div.textContent = texto;
-    } else if (remitente === 'chef') {
-      div.className = 'burbuja burbuja-chef';
-      div.innerHTML = `👨‍🍳 <b>Chef:</b> ${texto}`;
-    } else {
-      div.className = 'burbuja burbuja-bot';
-      div.innerHTML = texto;
-    }
-    cont.appendChild(div);
-    cont.scrollTop = cont.scrollHeight;
+  function cerrarModalChef() {
+    document.getElementById('modal-chef').classList.remove('abierto');
+    document.getElementById('clave-chef-input').value = '';
   }
 
-  async function cargarHistorialChat() {
-    const { data } = await supabaseClient
-      .from('mensajes_chat')
-      .select('*')
-      .eq('sesion_id', sesionId)
-      .order('creado_en', { ascending: true });
-
-    if (data && data.length > 0) {
-      data.forEach(m => pintarBurbuja(m.remitente, m.mensaje));
-    }
-  }
-
-  async function responderBot(msg) {
-    const textoUpper = msg.toUpperCase();
-    const folioMatch = textoUpper.match(/JC-\d+/);
-
-    if (folioMatch) {
-      const folioBuscado = folioMatch[0];
-      const { data } = await supabaseClient
-        .from('pedidos')
-        .select('*')
-        .eq('folio', folioBuscado)
-        .single();
-
-      if (data) {
-        return `📦 Folio <b>${data.folio}</b> (${data.cliente_nombre})<br>Estado actual: <b>${data.estado}</b><br>Total: <b>$${data.total}</b>`;
-      }
-      return `No encontré ningún pedido con el folio <b>${folioBuscado}</b>. Revisa que esté bien escrito.`;
-    }
-
-    if (textoUpper.includes('PRECIO') || textoUpper.includes('MENU') || textoUpper.includes('MENÚ') || textoUpper.includes('CREPA') || textoUpper.includes('FRAPPE') || textoUpper.includes('FRAPPÉ')) {
-      return 'Frappés desde <b>$75</b>, crepas dulces desde <b>$70</b> (sencilla) / <b>$80</b> (combinada), crepas saladas <b>$80</b>, Bowl Crepa <b>$75</b> y Waffle desde <b>$55</b>.';
-    }
-
-    if (textoUpper.includes('ENVIO') || textoUpper.includes('ENVÍO') || textoUpper.includes('DOMICILIO') || textoUpper.includes('ENTREGA')) {
-      return 'Hacemos <b>envío a domicilio</b> (puedes marcar tu ubicación en el mapa) y también <b>recolección física en el puesto</b>.';
-    }
-
-    if (textoUpper.includes('PAGO') || textoUpper.includes('EFECTIVO') || textoUpper.includes('TRANSFERENCIA')) {
-      return 'Aceptamos <b>efectivo</b> y <b>transferencia</b>. Si pagas en efectivo, puedes indicar con cuánto pagas en el carrito.';
-    }
-
-    return 'Mensaje recibido. Si necesitas algo en especial, el chef te responderá por aquí mismo en cuanto lo vea.';
-  }
-
-  async function enviarMensajeChat(e) {
+  function verificarClaveChef(e) {
     e.preventDefault();
-    const input = document.getElementById('chat-input');
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-
-    const nombreCliente = document.getElementById('cliente-nombre').value.trim() || 'Visitante';
-
-    await supabaseClient.from('mensajes_chat').insert([{
-      sesion_id: sesionId,
-      cliente_nombre: nombreCliente,
-      remitente: 'cliente',
-      mensaje: msg
-    }]);
-
-    const respuesta = await responderBot(msg);
-    if (respuesta) {
-      await supabaseClient.from('mensajes_chat').insert([{
-        sesion_id: sesionId,
-        cliente_nombre: nombreCliente,
-        remitente: 'bot',
-        mensaje: respuesta
-      }]);
-    }
-  }
-
-  supabaseClient
-    .channel('juniors-chat-' + sesionId)
-    .on('postgres_changes', {
-      event: 'INSERT',
-      schema: 'public',
-      table: 'mensajes_chat',
-      filter: `sesion_id=eq.${sesionId}`
-    }, payload => {
-      pintarBurbuja(payload.new.remitente, payload.new.mensaje);
-    })
-    .subscribe();
-</script>
-
-</body>
-</html>
+    const clave = document.getElementById('clave-chef-input').value;
+    if (clave === CLAVE_COCINA) {
+      sessionStorage.setItem('juniors_chef_auth', 'ok');
+      window.location.href = 'cocina.html';
+    } else {
+      alert('Contraseña incorrecta.');
