@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cocina en Vivo - Junior's Creperie</title>
+  <title>Cocina en Vivo — Junior's Creperie</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
       font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
     }
 
-    h1, h2, h3, .titulo-seccion, .folio-badge, .btn-estado {
+    h1, h2, h3, .titulo-seccion, .folio-badge, .btn-estado, .btn-enviar {
       font-family: 'Fredoka', 'Segoe UI', sans-serif;
     }
 
@@ -40,7 +40,7 @@
 
     .topbar {
       max-width: 1180px;
-      margin: 0 auto 14px;
+      margin: 0 auto 16px;
       background: var(--texto-espresso);
       color: #fef3c7;
       border: 2.5px solid var(--borde-canela);
@@ -54,7 +54,7 @@
       box-shadow: 0 8px 20px rgba(43, 20, 7, 0.2);
     }
 
-    .topbar-left {
+    .topbar-izq {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -62,33 +62,32 @@
 
     .topbar h1 {
       margin: 0;
-      font-size: 1.4rem;
-      letter-spacing: 0.3px;
+      font-size: 1.45rem;
     }
 
     .badge-live {
       background: #15803d;
-      color: #ffffff;
-      font-size: 0.75rem;
+      color: #dcfce7;
+      font-size: 0.78rem;
       font-weight: 800;
       padding: 4px 10px;
       border-radius: 999px;
       letter-spacing: 0.5px;
     }
 
-    .topbar-actions {
+    .topbar-der {
       display: flex;
       gap: 8px;
       align-items: center;
     }
 
     .btn-top {
-      background: var(--tarjeta-suave);
+      background: #fef3c7;
       color: var(--texto-espresso);
       border: 1.5px solid var(--borde-canela);
-      border-radius: 8px;
-      padding: 6px 11px;
-      font-size: 0.8rem;
+      border-radius: 9px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -97,12 +96,12 @@
       max-width: 1180px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.25fr 1fr;
+      grid-template-columns: 1.35fr 1fr;
       gap: 16px;
       align-items: start;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 880px) {
       .layout {
         grid-template-columns: 1fr;
       }
@@ -111,40 +110,39 @@
     .panel {
       background: var(--panel-beige);
       border: 2.5px solid var(--borde-canela);
-      border-radius: 18px;
-      padding: 15px;
-      box-shadow: 0 10px 24px rgba(74, 34, 12, 0.12);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(74, 34, 12, 0.14);
     }
 
     .titulo-seccion {
       background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
       color: #fffdf9;
-      text-align: center;
       font-weight: 700;
       font-size: 1rem;
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: 10px;
-      margin: 0 0 12px 0;
+      margin: 0 0 12px;
       box-shadow: 0 3px 0 #7c3f12;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .filtros-pedidos {
+    .filtros {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .filtro-btn {
-      background: var(--tarjeta-beige);
-      color: var(--texto-cacao);
+      background: #fffdf9;
       border: 1.5px solid var(--borde-canela);
+      color: var(--texto-cacao);
       border-radius: 999px;
-      padding: 4px 12px;
-      font-size: 0.78rem;
+      padding: 5px 12px;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -152,38 +150,34 @@
     .filtro-btn.activo {
       background: var(--acento-caramelo);
       color: #fffdf9;
+      border-color: var(--texto-espresso);
     }
 
-    .lista-pedidos {
+    .pedidos-lista {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       max-height: 75vh;
       overflow-y: auto;
-      padding-right: 2px;
+      padding-right: 4px;
     }
 
     .pedido-card {
       background: var(--tarjeta-beige);
       border: 2px solid var(--borde-suave);
       border-left: 6px solid var(--acento-caramelo);
-      border-radius: 13px;
-      padding: 12px;
-      box-shadow: 0 3px 8px rgba(43, 20, 7, 0.06);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 3px 10px rgba(74, 34, 12, 0.06);
     }
 
-    .pedido-card.estado-preparacion {
-      border-left-color: #2563eb;
+    .pedido-card.estado-Listo {
+      border-left-color: #15803d;
     }
 
-    .pedido-card.estado-listo {
-      border-left-color: #16a34a;
-      background: #f0fdf4;
-    }
-
-    .pedido-card.estado-entregado {
-      border-left-color: #6b7280;
+    .pedido-card.estado-Entregado {
       opacity: 0.72;
+      border-left-color: #6b7280;
     }
 
     .pedido-head {
@@ -191,138 +185,153 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-bottom: 6px;
       flex-wrap: wrap;
+      margin-bottom: 6px;
     }
 
     .folio-badge {
       background: var(--azul-etiqueta);
       color: #fef3c7;
       padding: 3px 10px;
-      border-radius: 7px;
-      font-size: 0.92rem;
+      border-radius: 8px;
       font-weight: 700;
+      font-size: 0.95rem;
     }
 
-    .cliente-txt {
+    .cliente-info {
       font-weight: 800;
-      font-size: 0.96rem;
+      font-size: 1rem;
       color: var(--texto-espresso);
     }
 
     .estado-pill {
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 800;
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 999px;
-      background: #fef3c7;
-      color: #92400e;
-      border: 1px solid #f59e0b;
-    }
-
-    .estado-pill.preparacion {
-      background: #dbeafe;
-      color: #1e40af;
-      border-color: #60a5fa;
-    }
-
-    .estado-pill.listo {
-      background: #dcfce7;
-      color: #166534;
-      border-color: #4ade80;
-    }
-
-    .estado-pill.entregado {
-      background: #e5e7eb;
-      color: #374151;
-      border-color: #9ca3af;
+      background: var(--tarjeta-suave);
+      border: 1.5px solid var(--borde-canela);
+      color: var(--texto-cacao);
     }
 
     .pedido-meta {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--texto-cacao);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 600;
     }
 
-    .pedido-detalle {
+    /* Ticket ordenado por productos y etiquetas */
+    .ticket-cocina {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .ticket-item {
       background: var(--tarjeta-suave);
       border: 1px solid var(--borde-suave);
-      border-radius: 8px;
-      padding: 8px 10px;
+      border-left: 4px solid var(--acento-caramelo);
+      border-radius: 9px;
+      padding: 7px 10px;
       font-size: 0.86rem;
-      line-height: 1.4;
-      margin-bottom: 9px;
+      line-height: 1.35;
+      color: var(--texto-espresso);
+    }
+
+    .ticket-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .meta-pill {
+      background: #fffdf9;
+      border: 1.5px solid var(--borde-canela);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 0.79rem;
+      font-weight: 700;
       color: var(--texto-espresso);
     }
 
     .acciones-estado {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
     }
 
-    @media (max-width: 460px) {
+    @media (max-width: 520px) {
       .acciones-estado {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     .btn-estado {
-      border: none;
+      border: 1.5px solid var(--borde-canela);
       border-radius: 8px;
       padding: 7px 6px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
-      color: #ffffff;
+      background: #fffdf9;
+      color: var(--texto-espresso);
     }
 
-    .btn-recibido { background: #d97706; }
-    .btn-prep { background: #2563eb; }
-    .btn-listo { background: #16a34a; }
-    .btn-entregado { background: #4b5563; }
-
-    /* Panel derecho: Chat en vivo */
-    .chat-panel {
-      display: flex;
-      flex-direction: column;
-      height: 82vh;
-      min-height: 500px;
+    .btn-estado.activo-Recibido {
+      background: #f59e0b;
+      color: #fffdf9;
     }
 
+    .btn-estado.activo-En-preparacion {
+      background: #2563eb;
+      color: #fffdf9;
+    }
+
+    .btn-estado.activo-Listo {
+      background: #16a34a;
+      color: #fffdf9;
+    }
+
+    .btn-estado.activo-Entregado {
+      background: #4b5563;
+      color: #fffdf9;
+    }
+
+    /* Panel de Chat con Clientes */
     .sesiones-bar {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 8px;
-      margin-bottom: 8px;
-      border-bottom: 1.5px dashed var(--borde-canela);
+      margin-bottom: 10px;
+      border-bottom: 1.5px solid var(--borde-suave);
     }
 
-    .sesion-chip {
-      background: var(--tarjeta-beige);
+    .sesion-pill {
+      background: #fffdf9;
       border: 1.5px solid var(--borde-canela);
-      border-radius: 10px;
-      padding: 6px 10px;
-      font-size: 0.78rem;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
-      color: var(--texto-espresso);
-      flex-shrink: 0;
+      color: var(--texto-cacao);
     }
 
-    .sesion-chip.activa {
+    .sesion-pill.activa {
       background: var(--texto-espresso);
       color: #fef3c7;
     }
 
     .chat-box {
-      flex: 1;
       background: #fdf6e7;
       border: 1.5px solid var(--borde-suave);
       border-radius: 12px;
+      height: 360px;
       padding: 10px;
       overflow-y: auto;
       display: flex;
@@ -331,10 +340,10 @@
       margin-bottom: 10px;
     }
 
-    .msg-item {
+    .msg {
       padding: 8px 11px;
       border-radius: 11px;
-      max-width: 84%;
+      max-width: 85%;
       font-size: 0.85rem;
       line-height: 1.35;
       overflow-wrap: break-word;
@@ -342,17 +351,17 @@
 
     .msg-cliente {
       align-self: flex-start;
-      background: #ffffff;
-      border: 1.5px solid var(--borde-canela);
+      background: #fffdf9;
+      border: 1.5px solid var(--borde-suave);
       color: var(--texto-espresso);
     }
 
     .msg-bot {
       align-self: flex-start;
-      background: #f3e8d2;
+      background: var(--tarjeta-suave);
+      border: 1px dashed var(--borde-canela);
       color: var(--texto-cacao);
       font-size: 0.8rem;
-      border: 1px dashed var(--borde-suave);
     }
 
     .msg-chef {
@@ -371,386 +380,430 @@
 
     .respuestas-rapidas {
       display: flex;
-      gap: 5px;
+      gap: 6px;
       flex-wrap: wrap;
       margin-bottom: 8px;
     }
 
-    .chip-rapido {
+    .btn-rapida {
       background: var(--tarjeta-suave);
       border: 1px solid var(--borde-canela);
-      border-radius: 999px;
+      border-radius: 8px;
       padding: 4px 9px;
-      font-size: 0.74rem;
+      font-size: 0.76rem;
       font-weight: 700;
       color: var(--texto-cacao);
       cursor: pointer;
     }
 
-    .chef-form {
+    .chat-form {
       display: flex;
-      gap: 7px;
+      gap: 8px;
     }
 
-    .chef-form input {
+    .chat-form input {
       flex: 1;
       padding: 10px 12px;
-      border-radius: 9px;
+      border-radius: 10px;
       border: 1.5px solid var(--borde-canela);
       background: #fffdf9;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
     }
 
-    .btn-enviar-chef {
+    .btn-enviar {
       background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
       color: #ffffff;
       border: none;
-      border-radius: 9px;
+      border-radius: 10px;
       padding: 0 16px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 2px 0 #14532d;
+    }
+
+    .vacio {
+      text-align: center;
+      color: var(--texto-cacao);
+      font-size: 0.88rem;
+      padding: 24px 10px;
     }
   </style>
 </head>
 <body>
 
-  <header class="topbar">
-    <div class="topbar-left">
-      <h1>👨‍🍳 Cocina — Junior's Creperie</h1>
-      <span class="badge-live">● EN VIVO</span>
+<div class="topbar">
+  <div class="topbar-izq">
+    <h1>👨‍🍳 Cocina — Junior's Creperie</h1>
+    <span class="badge-live">● EN VIVO</span>
+  </div>
+  <div class="topbar-der">
+    <button type="button" class="btn-top" id="btn-sonido" onclick="toggleSonido()">🔔 Sonido: ON</button>
+    <button type="button" class="btn-top" onclick="recargarTodo()">🔄 Actualizar</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- COLUMNA IZQUIERDA: PEDIDOS EN TIEMPO REAL -->
+  <div class="panel">
+    <div class="titulo-seccion">
+      <span>📋 PEDIDOS EN COCINA</span>
+      <span id="contador-pedidos" style="font-size:0.85rem;">0 activos</span>
     </div>
-    <div class="topbar-actions">
-      <button type="button" id="btn-sonido" class="btn-top" onclick="toggleSonido()">🔔 Sonido: ON</button>
-      <button type="button" class="btn-top" onclick="recargarTodo()">🔄 Actualizar</button>
+
+    <div class="filtros">
+      <button type="button" class="filtro-btn activo" onclick="cambiarFiltro('activos', this)">Activos</button>
+      <button type="button" class="filtro-btn" onclick="cambiarFiltro('todos', this)">Todos</button>
+      <button type="button" class="filtro-btn" onclick="cambiarFiltro('Entregado', this)">Entregados</button>
     </div>
-  </header>
 
-  <main class="layout">
-    <!-- COLUMNA IZQUIERDA: PEDIDOS -->
-    <section class="panel">
-      <div class="titulo-seccion">
-        <span>📋 PEDIDOS EN COCINA</span>
-        <span id="contador-pedidos" style="font-size:0.82rem;">0 activos</span>
-      </div>
+    <div id="lista-pedidos" class="pedidos-lista">
+      <div class="vacio">Cargando pedidos en vivo...</div>
+    </div>
+  </div>
 
-      <div class="filtros-pedidos">
-        <button type="button" class="filtro-btn activo" onclick="cambiarFiltro('activos', this)">Activos</button>
-        <button type="button" class="filtro-btn" onclick="cambiarFiltro('todos', this)">Todos</button>
-        <button type="button" class="filtro-btn" onclick="cambiarFiltro('Entregado', this)">Entregados</button>
-      </div>
+  <!-- COLUMNA DERECHA: CHAT EN VIVO CON CLIENTES -->
+  <div class="panel">
+    <div class="titulo-seccion">
+      <span>💬 CHAT CON CLIENTES</span>
+      <span id="chat-cliente-activo" style="font-size:0.82rem;">Sin chat seleccionado</span>
+    </div>
 
-      <div id="lista-pedidos" class="lista-pedidos">
-        <p style="text-align:center; color:#542910;">Cargando pedidos...</p>
-      </div>
-    </section>
+    <div id="lista-sesiones" class="sesiones-bar"></div>
 
-    <!-- COLUMNA DERECHA: CHAT EN VIVO -->
-    <section class="panel chat-panel">
-      <div class="titulo-seccion">
-        <span>💬 CHAT CON CLIENTES</span>
-        <span id="sesion-activa-label" style="font-size:0.78rem;">Sin selección</span>
-      </div>
+    <div id="chat-mensajes" class="chat-box">
+      <div class="vacio">Selecciona un cliente arriba para ver y responder sus mensajes.</div>
+    </div>
 
-      <div id="sesiones-bar" class="sesiones-bar">
-        <span style="font-size:0.8rem; color:#542910;">Cargando conversaciones...</span>
-      </div>
+    <div class="respuestas-rapidas">
+      <button type="button" class="btn-rapida" onclick="ponerRespuestaRapida('¡Hola! Tu pedido ya está en plancha, tarda aprox. 15 min.')">⏱️ 15 min</button>
+      <button type="button" class="btn-rapida" onclick="ponerRespuestaRapida('¡Tu pedido ya está listo! Puedes pasar o va en camino 🥞')">✅ Ya está listo</button>
+      <button type="button" class="btn-rapida" onclick="ponerRespuestaRapida('¡Enterado! Así se lo preparamos con gusto 👍')">👍 Enterado</button>
+    </div>
 
-      <div id="chat-box" class="chat-box">
-        <p style="text-align:center; color:#542910; margin:auto;">Selecciona un cliente arriba para ver y responder sus mensajes.</p>
-      </div>
+    <form class="chat-form" onsubmit="enviarRespuestaChef(event)">
+      <input type="text" id="input-respuesta-chef" placeholder="Escribe respuesta al cliente..." autocomplete="off" required />
+      <button type="submit" class="btn-enviar">Enviar</button>
+    </form>
+  </div>
 
-      <div class="respuestas-rapidas">
-        <button type="button" class="chip-rapido" onclick="usarRespuestaRapida('¡Hola! Tu pedido ya está en plancha, tarda aprox. 15 min.')">⏱️ 15 min</button>
-        <button type="button" class="chip-rapido" onclick="usarRespuestaRapida('¡Tu pedido ya está listo! En un momento sale.')">✅ Ya está listo</button>
-        <button type="button" class="chip-rapido" onclick="usarRespuestaRapida('¡Claro! Ya tomamos nota para prepararlo así.')">👍 Enterado</button>
-      </div>
+</div>
 
-      <form class="chef-form" onsubmit="enviarRespuestaChef(event)">
-        <input id="chef-input" type="text" placeholder="Escribe respuesta al cliente..." autocomplete="off" required />
-        <button type="submit" class="btn-enviar-chef">Enviar</button>
-      </form>
-    </section>
-  </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://fhaxdrwgjvolzyyrykqv.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_SZWG4bLKKN9lcJi_hTRe9Q_LYOlhjse';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // ==========================================
-    // CONFIGURACIÓN SUPABASE
-    // ==========================================
-    const SUPABASE_URL = 'https://fhaxdrwgjvolzyyrykqv.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_SZWG4bLKKN9lcJi_hTRe9Q_LYOlhjse'; // <-- Pega tu sb_publishable_...
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    let filtroActual = 'activos';
-    let pedidosCache = [];
-    let sesionSeleccionada = null;
-    let sonidoActivo = true;
-
-    function toggleSonido() {
-      sonidoActivo = !sonidoActivo;
-      document.getElementById('btn-sonido').textContent = sonidoActivo ? '🔔 Sonido: ON' : '🔕 Sonido: OFF';
+  // Protección de acceso con contraseña
+  const CLAVE_COCINA = "1234"; // <-- Misma contraseña que en index.html
+  if (sessionStorage.getItem('juniors_chef_auth') !== 'ok') {
+    const intento = prompt('👨‍🍳 Ingresa la contraseña de cocina:');
+    if (intento === CLAVE_COCINA) {
+      sessionStorage.setItem('juniors_chef_auth', 'ok');
+    } else {
+      alert('Acceso denegado.');
+      window.location.href = 'index.html';
     }
+  }
 
-    function sonarAviso() {
-      if (!sonidoActivo) return;
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.25);
-      } catch (e) {}
-    }
+  let pedidosCache = [];
+  let filtroActual = 'activos';
+  let sesionSeleccionada = null;
+  let sonidoActivo = true;
 
-    function formatearHora(iso) {
-      if (!iso) return '';
-      const d = new Date(iso);
-      return d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-    }
+  function toggleSonido() {
+    sonidoActivo = !sonidoActivo;
+    document.getElementById('btn-sonido').innerText = sonidoActivo ? '🔔 Sonido: ON' : '🔕 Sonido: OFF';
+  }
 
-    // ==========================================
-    // GESTIÓN DE PEDIDOS
-    // ==========================================
-    function cambiarFiltro(nuevoFiltro, btn) {
-      filtroActual = nuevoFiltro;
-      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
-      btn.classList.add('activo');
-      renderPedidos();
-    }
+  function sonarAviso() {
+    if (!sonidoActivo) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(740, ctx.currentTime);
+      osc.frequency.setValueAtTime(980, ctx.currentTime + 0.14);
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.45);
+    } catch (e) {}
+  }
 
-    async function cargarPedidos() {
-      const { data, error } = await supabaseClient
-        .from('pedidos')
-        .select('*')
-        .order('creado_en', { ascending: false });
+  function formatearHora(fechaIso) {
+    if (!fechaIso) return '';
+    const d = new Date(fechaIso);
+    return d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+  }
 
-      if (error) {
-        document.getElementById('lista-pedidos').innerHTML =
-          `<p style="color:#b91c1c; font-weight:700;">Error cargando pedidos: ${error.message}</p>`;
-        return;
+  function formatearTicketCocina(detalle) {
+    if (!detalle) return '';
+
+    const partes = detalle.includes('\n')
+      ? detalle.split('\n')
+      : detalle.split(/\s*\|\s*|\s*•\s*(?=Dir:|Notas:|Pago:)/);
+
+    let itemsHtml = [];
+    let metaHtml = [];
+
+    partes.forEach((linea) => {
+      const limpia = linea.trim().replace(/\(\$(\d+)\)\s*\(\$\1\)/g, '$$$1');
+      if (!limpia) return;
+
+      if (/^(📍|📝|💳|Dir:|Notas:|Pago:)/i.test(limpia)) {
+        const etiqueta = limpia
+          .replace(/^Dir:/i, '📍 Dirección:')
+          .replace(/^Notas:/i, '📝 Notas:')
+          .replace(/^Pago:/i, '💳 Pago:');
+        metaHtml.push(`<span class="meta-pill">${etiqueta}</span>`);
+      } else {
+        itemsHtml.push(`<div class="ticket-item">${limpia}</div>`);
       }
+    });
 
-      pedidosCache = data || [];
-      renderPedidos();
+    return `
+      <div class="ticket-cocina">
+        ${itemsHtml.join('')}
+        ${metaHtml.length ? `<div class="ticket-meta">${metaHtml.join('')}</div>` : ''}
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // GESTIÓN DE PEDIDOS
+  // ==========================================
+  async function cargarPedidos() {
+    const { data, error } = await supabaseClient
+      .from('pedidos')
+      .select('*')
+      .order('creado_en', { ascending: false })
+      .limit(50);
+
+    if (error) {
+      document.getElementById('lista-pedidos').innerHTML =
+        `<div class="vacio">Error cargando pedidos: ${error.message}</div>`;
+      return;
     }
 
-    function renderPedidos() {
-      const cont = document.getElementById('lista-pedidos');
-      const activosCount = pedidosCache.filter(p => p.estado !== 'Entregado').length;
-      document.getElementById('contador-pedidos').textContent = `${activosCount} activos`;
+    pedidosCache = data || [];
+    renderPedidos();
+  }
 
-      let filtrados = pedidosCache;
-      if (filtroActual === 'activos') {
-        filtrados = pedidosCache.filter(p => p.estado !== 'Entregado');
-      } else if (filtroActual === 'Entregado') {
-        filtrados = pedidosCache.filter(p => p.estado === 'Entregado');
-      }
+  function cambiarFiltro(nuevoFiltro, btn) {
+    filtroActual = nuevoFiltro;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
+    btn.classList.add('activo');
+    renderPedidos();
+  }
 
-      if (filtrados.length === 0) {
-        cont.innerHTML = '<p style="text-align:center; color:#542910;">No hay pedidos en esta vista.</p>';
-        return;
-      }
+  function renderPedidos() {
+    const activosCount = pedidosCache.filter(p => p.estado !== 'Entregado').length;
+    document.getElementById('contador-pedidos').innerText = `${activosCount} activos`;
 
-      cont.innerHTML = filtrados.map(p => {
-        let claseCard = '';
-        let clasePill = '';
-        if (p.estado === 'En preparación') { claseCard = 'estado-preparacion'; clasePill = 'preparacion'; }
-        else if (p.estado === 'Listo') { claseCard = 'estado-listo'; clasePill = 'listo'; }
-        else if (p.estado === 'Entregado') { claseCard = 'estado-entregado'; clasePill = 'entregado'; }
+    let filtrados = pedidosCache;
+    if (filtroActual === 'activos') {
+      filtrados = pedidosCache.filter(p => p.estado !== 'Entregado');
+    } else if (filtroActual === 'Entregado') {
+      filtrados = pedidosCache.filter(p => p.estado === 'Entregado');
+    }
 
-        return `
-          <div class="pedido-card ${claseCard}">
-            <div class="pedido-head">
-              <div>
-                <span class="folio-badge">${p.folio}</span>
-                <span class="cliente-txt" style="margin-left:6px;">${p.cliente_nombre}</span>
-              </div>
-              <span class="estado-pill ${clasePill}">${p.estado}</span>
+    const cont = document.getElementById('lista-pedidos');
+    if (filtrados.length === 0) {
+      cont.innerHTML = `<div class="vacio">No hay pedidos en esta vista.</div>`;
+      return;
+    }
+
+    cont.innerHTML = filtrados.map(p => {
+      const claseEstado = 'estado-' + p.estado.replace(/\s+/g, '-');
+      return `
+        <div class="pedido-card ${claseEstado}">
+          <div class="pedido-head">
+            <div>
+              <span class="folio-badge">${p.folio}</span>
+              <span class="cliente-info" style="margin-left:6px;">${p.cliente_nombre}</span>
             </div>
-            <div class="pedido-meta">
-              🛵 ${p.tipo_entrega} • 💰 Total: <b>$${p.total}</b> • 🕒 ${formatearHora(p.creado_en)}
-            </div>
-            <div class="pedido-detalle">${p.detalle}</div>
-            <div class="acciones-estado">
-              <button type="button" class="btn-estado btn-recibido" onclick="actualizarEstado('${p.folio}', 'Recibido')">Recibido</button>
-              <button type="button" class="btn-estado btn-prep" onclick="actualizarEstado('${p.folio}', 'En preparación')">En prep.</button>
-              <button type="button" class="btn-estado btn-listo" onclick="actualizarEstado('${p.folio}', 'Listo')">Listo</button>
-              <button type="button" class="btn-estado btn-entregado" onclick="actualizarEstado('${p.folio}', 'Entregado')">Entregado</button>
-            </div>
+            <span class="estado-pill">${p.estado}</span>
           </div>
-        `;
-      }).join('');
+          <div class="pedido-meta">
+            🛵 ${p.tipo_entrega} • 💰 Total: <b>$${p.total}</b> • 🕒 ${formatearHora(p.creado_en)}
+          </div>
+          ${formatearTicketCocina(p.detalle)}
+          <div class="acciones-estado">
+            <button type="button" class="btn-estado ${p.estado === 'Recibido' ? 'activo-Recibido' : ''}" onclick="actualizarEstadoPedido('${p.id}', 'Recibido')">Recibido</button>
+            <button type="button" class="btn-estado ${p.estado === 'En preparación' ? 'activo-En-preparacion' : ''}" onclick="actualizarEstadoPedido('${p.id}', 'En prep.')">En prep.</button>
+            <button type="button" class="btn-estado ${p.estado === 'Listo' ? 'activo-Listo' : ''}" onclick="actualizarEstadoPedido('${p.id}', 'Listo')">Listo</button>
+            <button type="button" class="btn-estado ${p.estado === 'Entregado' ? 'activo-Entregado' : ''}" onclick="actualizarEstadoPedido('${p.id}', 'Entregado')">Entregado</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function actualizarEstadoPedido(id, nuevoEstado) {
+    const estadoReal = nuevoEstado === 'En prep.' ? 'En preparación' : nuevoEstado;
+    const { error } = await supabaseClient
+      .from('pedidos')
+      .update({ estado: estadoReal })
+      .eq('id', id);
+
+    if (error) {
+      alert('No se pudo actualizar el estado: ' + error.message);
+    }
+  }
+
+  // ==========================================
+  // GESTIÓN DE CHAT CON CLIENTES
+  // ==========================================
+  async function cargarSesiones() {
+    const { data, error } = await supabaseClient
+      .from('mensajes_chat')
+      .select('sesion_id, cliente_nombre, creado_en')
+      .order('creado_en', { ascending: false })
+      .limit(100);
+
+    if (error || !data) return;
+
+    const mapaSesiones = new Map();
+    data.forEach(m => {
+      if (!mapaSesiones.has(m.sesion_id)) {
+        mapaSesiones.set(m.sesion_id, {
+          sesion_id: m.sesion_id,
+          cliente_nombre: m.cliente_nombre || 'Visitante'
+        });
+      }
+    });
+
+    const lista = Array.from(mapaSesiones.values());
+    const cont = document.getElementById('lista-sesiones');
+
+    if (lista.length === 0) {
+      cont.innerHTML = `<span style="font-size:0.8rem; color:#542910;">Aún no hay mensajes de clientes.</span>`;
+      return;
     }
 
-    async function actualizarEstado(folio, nuevoEstado) {
-      const { error } = await supabaseClient
-        .from('pedidos')
-        .update({ estado: nuevoEstado })
-        .eq('folio', folio);
-
-      if (error) {
-        alert('No se pudo actualizar el estado: ' + error.message);
-        return;
-      }
-      await cargarPedidos();
+    if (!sesionSeleccionada && lista.length > 0) {
+      sesionSeleccionada = lista[0].sesion_id;
     }
 
-    // ==========================================
-    // CHAT EN VIVO
-    // ==========================================
-    async function cargarSesiones() {
-      const { data, error } = await supabaseClient
-        .from('mensajes_chat')
-        .select('sesion_id, cliente_nombre, remitente, creado_en')
-        .order('creado_en', { ascending: false });
+    cont.innerHTML = lista.map(s => `
+      <button type="button" class="sesion-pill ${s.sesion_id === sesionSeleccionada ? 'activa' : ''}"
+        onclick="seleccionarSesion('${s.sesion_id}', '${s.cliente_nombre.replace(/'/g, '')}')">
+        ${s.cliente_nombre} (${s.sesion_id.slice(-5)})
+      </button>
+    `).join('');
 
-      if (error || !data) return;
-
-      const sesionesMap = new Map();
-      data.forEach(m => {
-        if (!sesionesMap.has(m.sesion_id)) {
-          sesionesMap.set(m.sesion_id, {
-            id: m.sesion_id,
-            nombre: m.cliente_nombre && m.cliente_nombre !== 'Chef' ? m.cliente_nombre : 'Cliente',
-            ultimoRemitente: m.remitente
-          });
-        } else if (sesionesMap.get(m.sesion_id).nombre === 'Cliente' && m.cliente_nombre && m.cliente_nombre !== 'Chef' && m.cliente_nombre !== 'Visitante') {
-          sesionesMap.get(m.sesion_id).nombre = m.cliente_nombre;
-        }
-      });
-
-      const bar = document.getElementById('sesiones-bar');
-      if (sesionesMap.size === 0) {
-        bar.innerHTML = '<span style="font-size:0.8rem; color:#542910;">Aún no hay mensajes de clientes.</span>';
-        return;
-      }
-
-      if (!sesionSeleccionada) {
-        sesionSeleccionada = Array.from(sesionesMap.keys())[0];
-      }
-
-      bar.innerHTML = Array.from(sesionesMap.values()).map(s => {
-        const activa = s.id === sesionSeleccionada ? 'activa' : '';
-        const alerta = s.ultimoRemitente === 'cliente' ? ' 🔴' : '';
-        return `<button type="button" class="sesion-chip ${activa}" onclick="seleccionarSesion('${s.id}', '${s.nombre.replace(/'/g, "\\'")}')">${s.nombre} (${s.id.replace('JC-CLI-', '')})${alerta}</button>`;
-      }).join('');
-
-      const actualObj = sesionesMap.get(sesionSeleccionada);
-      if (actualObj) {
-        document.getElementById('sesion-activa-label').textContent = `${actualObj.nombre}`;
-      }
+    const actual = lista.find(s => s.sesion_id === sesionSeleccionada);
+    if (actual) {
+      document.getElementById('chat-cliente-activo').innerText = actual.cliente_nombre;
+      cargarMensajesSesion();
     }
+  }
 
-    async function seleccionarSesion(id, nombre) {
-      sesionSeleccionada = id;
-      document.getElementById('sesion-activa-label').textContent = nombre;
-      await cargarSesiones();
-      await cargarMensajesSesion();
-    }
+  function seleccionarSesion(id, nombre) {
+    sesionSeleccionada = id;
+    document.getElementById('chat-cliente-activo').innerText = nombre;
+    cargarSesiones();
+  }
 
-    async function cargarMensajesSesion() {
-      if (!sesionSeleccionada) return;
-      const box = document.getElementById('chat-box');
+  async function cargarMensajesSesion() {
+    if (!sesionSeleccionada) return;
+    const { data, error } = await supabaseClient
+      .from('mensajes_chat')
+      .select('*')
+      .eq('sesion_id', sesionSeleccionada)
+      .order('creado_en', { ascending: true });
 
-      const { data, error } = await supabaseClient
-        .from('mensajes_chat')
-        .select('*')
-        .eq('sesion_id', sesionSeleccionada)
-        .order('creado_en', { ascending: true });
+    if (error || !data) return;
 
-      if (error) {
-        box.innerHTML = `<p style="color:#b91c1c;">Error cargando chat: ${error.message}</p>`;
-        return;
+    const box = document.getElementById('chat-mensajes');
+    box.innerHTML = data.map(m => {
+      let clase = 'msg-cliente';
+      let etiqueta = `👤 ${m.cliente_nombre || 'Cliente'}`;
+      if (m.remitente === 'chef') {
+        clase = 'msg-chef';
+        etiqueta = '👨‍🍳 Chef';
+      } else if (m.remitente === 'bot') {
+        clase = 'msg-bot';
+        etiqueta = '🤖 Bot';
       }
+      return `
+        <div class="msg ${clase}">
+          <b>${etiqueta}:</b> ${m.mensaje}
+          <span class="msg-hora">${formatearHora(m.creado_en)}</span>
+        </div>
+      `;
+    }).join('');
+    box.scrollTop = box.scrollHeight;
+  }
 
-      if (!data || data.length === 0) {
-        box.innerHTML = '<p style="text-align:center; color:#542910; margin:auto;">Sin mensajes en esta conversación.</p>';
-        return;
-      }
+  function ponerRespuestaRapida(texto) {
+    const input = document.getElementById('input-respuesta-chef');
+    input.value = texto;
+    input.focus();
+  }
 
-      box.innerHTML = data.map(m => {
-        if (m.remitente === 'chef') {
-          return `<div class="msg-item msg-chef">👨‍🍳 <b>Chef:</b> ${m.mensaje}<span class="msg-hora">${formatearHora(m.creado_en)}</span></div>`;
-        }
-        if (m.remitente === 'bot') {
-          return `<div class="msg-item msg-bot">🤖 <b>Bot:</b> ${m.mensaje}<span class="msg-hora">${formatearHora(m.creado_en)}</span></div>`;
-        }
-        return `<div class="msg-item msg-cliente">👤 <b>${m.cliente_nombre || 'Cliente'}:</b> ${m.mensaje}<span class="msg-hora">${formatearHora(m.creado_en)}</span></div>`;
-      }).join('');
-
-      box.scrollTop = box.scrollHeight;
+  async function enviarRespuestaChef(e) {
+    e.preventDefault();
+    if (!sesionSeleccionada) {
+      alert('Selecciona primero una conversación de cliente.');
+      return;
     }
+    const input = document.getElementById('input-respuesta-chef');
+    const texto = input.value.trim();
+    if (!texto) return;
+    input.value = '';
 
-    function usarRespuestaRapida(texto) {
-      const input = document.getElementById('chef-input');
-      input.value = texto;
-      input.focus();
+    const { error } = await supabaseClient.from('mensajes_chat').insert([{
+      sesion_id: sesionSeleccionada,
+      cliente_nombre: 'Chef',
+      remitente: 'chef',
+      mensaje: texto
+    }]);
+
+    if (error) {
+      alert('Error al enviar mensaje: ' + error.message);
     }
+  }
 
-    async function enviarRespuestaChef(e) {
-      e.preventDefault();
-      if (!sesionSeleccionada) {
-        alert('Selecciona primero una conversación arriba.');
-        return;
-      }
-      const input = document.getElementById('chef-input');
-      const texto = input.value.trim();
-      if (!texto) return;
-      input.value = '';
+  async function recargarTodo() {
+    await cargarPedidos();
+    await cargarSesiones();
+    await cargarMensajesSesion();
+  }
 
-      const { error } = await supabaseClient.from('mensajes_chat').insert([{
-        sesion_id: sesionSeleccionada,
-        cliente_nombre: 'Chef',
-        remitente: 'chef',
-        mensaje: texto
-      }]);
+  // ==========================================
+  // SUSCRIPCIONES EN TIEMPO REAL
+  // ==========================================
+  supabaseClient
+    .channel('cocina-realtime-pedidos')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos' }, () => {
+      sonarAviso();
+      cargarPedidos();
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pedidos' }, () => {
+      cargarPedidos();
+    })
+    .subscribe();
 
-      if (error) {
-        alert('Error al enviar mensaje: ' + error.message);
-      }
-    }
-
-    async function recargarTodo() {
-      await cargarPedidos();
-      await cargarSesiones();
-      await cargarMensajesSesion();
-    }
-
-    // ==========================================
-    // SUSCRIPCIONES EN TIEMPO REAL
-    // ==========================================
-    supabaseClient
-      .channel('cocina-realtime-pedidos')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos' }, () => {
+  supabaseClient
+    .channel('cocina-realtime-chat')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes_chat' }, payload => {
+      if (payload.new.remitente === 'cliente') {
         sonarAviso();
-        cargarPedidos();
-      })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pedidos' }, () => {
-        cargarPedidos();
-      })
-      .subscribe();
+      }
+      cargarSesiones();
+      if (payload.new.sesion_id === sesionSeleccionada) {
+        cargarMensajesSesion();
+      }
+    })
+    .subscribe();
 
-    supabaseClient
-      .channel('cocina-realtime-chat')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes_chat' }, payload => {
-        if (payload.new && payload.new.remitente === 'cliente') {
-          sonarAviso();
-        }
-        cargarSesiones();
-        if (payload.new && payload.new.sesion_id === sesionSeleccionada) {
-          cargarMensajesSesion();
-        }
-      })
-      .subscribe();
+  recargarTodo();
+</script>
 
-    recargarTodo();
-  </script>
 </body>
 </html>

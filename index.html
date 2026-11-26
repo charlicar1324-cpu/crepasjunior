@@ -1011,7 +1011,7 @@
 
     <div class="especiales-crepa-box">
       <span class="especial-titulo">🥣🧇 Opciones Bowl Crepa y Waffle:</span>
-      <span class="especial-sub">También puedes aramarlos con los ingredientes dulces de abajo (untable, fruta, topping y extras).</span>
+      <span class="especial-sub">También puedes armarlos con los ingredientes dulces de abajo (untable, fruta, topping y extras).</span>
       <div class="especiales-grid">
         <label class="check-item especial-item">
           <input type="checkbox" class="especial-base" value="Bowl Crepa" data-precio="75">
@@ -1137,7 +1137,7 @@
     <button class="btn btn-agregar" onclick="agregarCrepa()">➕ Agregar esta crepa al pedido</button>
   </div>
 
-  <!-- 3. CARRITO UNIFICADO Y ENVÍO A WHATSAPP -->
+  <!-- 3. CARRITO UNIFICADO Y ENVÍO -->
   <div class="panel" style="margin-bottom:0;">
     <div class="titulo-seccion" style="margin-top:0;">🛒 TU PEDIDO COMPLETO</div>
 
@@ -1156,7 +1156,7 @@
           </label>
           <label class="pago-pill">
             <input type="radio" name="tipo-entrega" value="Paso al puesto (Físico)" onchange="toggleTipoEntrega()">
-            <span>🏪 Fisico </span>
+            <span>🏪 Físico</span>
           </label>
         </div>
       </div>
@@ -1625,17 +1625,26 @@
     let total = 0;
     let resumenItems = [];
 
-    carrito.forEach((item) => {
+    carrito.forEach((item, idx) => {
       total += item.precio;
-      resumenItems.push(item.textoVisual.replace(/<[^>]*>/g, ""));
+      let textoLimpio = item.textoVisual.replace(/<[^>]*>/g, "").trim();
+      const sufijoPrecio = `($${item.precio})`;
+      if (textoLimpio.endsWith(sufijoPrecio)) {
+        textoLimpio = textoLimpio.slice(0, -sufijoPrecio.length).trim();
+      }
+      resumenItems.push(`${idx + 1}. ${textoLimpio} — $${item.precio}`);
     });
 
-    const detalleDB = [
-      resumenItems.join(" | "),
-      direccion ? `Dir: ${direccion}` : null,
-      notas ? `Notas: ${notas}` : null,
-      `Pago: ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (con ${pagoCon})` : ""}`
-    ].filter(Boolean).join(" • ");
+    const bloquesDB = [resumenItems.join("\n")];
+    if (tipoEntrega === "A domicilio" && direccion) {
+      bloquesDB.push(`📍 Dirección: ${direccion}`);
+    }
+    if (notas) {
+      bloquesDB.push(`📝 Notas: ${notas}`);
+    }
+    bloquesDB.push(`💳 Pago: ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (paga con ${pagoCon})` : ""}`);
+
+    const detalleDB = bloquesDB.join("\n");
 
     const { error } = await supabaseClient.from('pedidos').insert([{
       folio,
