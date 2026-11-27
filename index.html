@@ -581,6 +581,54 @@
       margin-top: 8px;
     }
 
+    .transfer-datos-box {
+      display: none;
+      margin-top: 10px;
+      background: var(--tarjeta-suave);
+      border: 1.5px solid var(--borde-canela);
+      border-radius: 11px;
+      padding: 10px 11px;
+      color: var(--texto-espresso);
+      font-size: 0.82rem;
+    }
+
+    .transfer-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--texto-espresso);
+      margin-bottom: 4px;
+    }
+
+    .transfer-fila {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: #fffdf9;
+      border: 1px solid var(--borde-suave);
+      border-radius: 8px;
+      padding: 7px 9px;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      overflow-wrap: anywhere;
+    }
+
+    .btn-copiar-dato {
+      background: var(--acento-caramelo);
+      color: #fffdf9;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
     .mapa-box {
       background: var(--tarjeta-beige);
       border: 2px solid var(--borde-suave);
@@ -1053,6 +1101,26 @@
         <div id="efectivo-cambio-box">
           <input type="text" id="pago-con" style="margin-top:8px; margin-bottom:0;" placeholder="¿Con cuánto pagas? (opcional, ej. $500)">
         </div>
+
+        <div id="transfer-datos-box" class="transfer-datos-box">
+          <div class="transfer-cabecera">
+            <span>🏦 Datos para transferencia</span>
+            <span id="transfer-monto-txt">Total: $0</span>
+          </div>
+          <div>Realiza tu transferencia con estos datos y envía tu comprobante por WhatsApp:</div>
+
+          <div class="transfer-fila">
+            <span><b>Nombre:</b> <span id="transfer-titular-txt">Junior's Creperie</span></span>
+            <button type="button" class="btn-copiar-dato" onclick="copiarDatoTransferencia('titular')">Copiar</button>
+          </div>
+
+          <div class="transfer-fila">
+            <span><b>CLABE:</b> <span id="transfer-clabe-txt">000000000000000000</span></span>
+            <button type="button" class="btn-copiar-dato" onclick="copiarDatoTransferencia('clabe')">Copiar</button>
+          </div>
+
+          <div id="transfer-copiado-msg" style="margin-top:6px; font-weight:700; color:#15803d;"></div>
+        </div>
       </div>
 
       <div class="mapa-box">
@@ -1095,7 +1163,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // ==========================================
-  // CONFIGURACIÓN SUPABASE Y NEGOCIO
+  // CONFIGURACIÓN SUPABASE, NEGOCIO Y TRANSFERENCIA
   // ==========================================
   const SUPABASE_URL = 'https://fhaxdrwgjvolzyyrykqv.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_SZWG4bLKKN9lcJi_hTRe9Q_LYOlhjse';
@@ -1104,7 +1172,33 @@
   const TELEFONO_NEGOCIO = "7293610746";
   const PRECIO_CREPA_SALADA = 80;
   const CLAVE_COCINA = "1234"; // <-- Cambia aquí la contraseña para entrar a cocina.html
+
+  // Datos de cuenta para transferencia 
+  const MP_TITULAR = "Evelin Alcantara Romero";
+  const MP_CLABE = "4152 3146 8467 4297";
+
   let carrito = [];
+
+  function obtenerTotalCarrito() {
+    return carrito.reduce((acc, item) => acc + item.precio, 0);
+  }
+
+  function actualizarDatosTransferencia() {
+    document.getElementById('transfer-titular-txt').innerText = MP_TITULAR;
+    document.getElementById('transfer-clabe-txt').innerText = MP_CLABE;
+    document.getElementById('transfer-monto-txt').innerText = `Total: $${obtenerTotalCarrito()}`;
+  }
+
+  function copiarDatoTransferencia(tipo) {
+    const valor = tipo === 'clabe' ? MP_CLABE : MP_TITULAR;
+    const etiqueta = tipo === 'clabe' ? 'CLABE' : 'Nombre';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(valor).catch(() => {});
+    }
+    const msg = document.getElementById('transfer-copiado-msg');
+    msg.innerText = `✓ ${etiqueta} copiado`;
+    setTimeout(() => { msg.innerText = ""; }, 2200);
+  }
 
   // ==========================================
   // ACCESO A COCINA CON CONTRASEÑA
@@ -1138,7 +1232,14 @@
   function togglePagoEfectivo() {
     const metodo = document.querySelector('input[name="forma-pago"]:checked')?.value;
     const cambioBox = document.getElementById('efectivo-cambio-box');
-    cambioBox.style.display = metodo === "Efectivo" ? "block" : "none";
+    const transferBox = document.getElementById('transfer-datos-box');
+    const esEfectivo = metodo === "Efectivo";
+
+    cambioBox.style.display = esEfectivo ? "block" : "none";
+    transferBox.style.display = esEfectivo ? "none" : "block";
+    if (!esEfectivo) {
+      actualizarDatosTransferencia();
+    }
   }
 
   function toggleTipoEntrega() {
@@ -1240,6 +1341,7 @@
   }
 
   window.addEventListener('DOMContentLoaded', () => {
+    actualizarDatosTransferencia();
     togglePagoEfectivo();
     toggleTipoEntrega();
     document.getElementById('texto-coordenadas').innerText =
@@ -1445,6 +1547,7 @@
     if (carrito.length === 0) {
       contenedor.innerHTML = "Aún no agregas productos ni crepas.";
       totalEl.innerText = "Total: $0";
+      actualizarDatosTransferencia();
       return;
     }
 
@@ -1460,6 +1563,7 @@
     }).join("");
 
     totalEl.innerText = `Total: $${total}`;
+    actualizarDatosTransferencia();
   }
 
   async function enviarWhatsApp() {
@@ -1505,6 +1609,10 @@
       resumenItems.push(`${idx + 1}. ${textoLimpio} — $${item.precio}`);
     });
 
+    const detallePagoTexto = formaPago === "Efectivo"
+      ? (pagoCon ? `Efectivo (paga con ${pagoCon})` : "Efectivo")
+      : `Transferencia (${MP_TITULAR} • CLABE ${MP_CLABE})`;
+
     const bloquesDB = [resumenItems.join("\n")];
     if (tipoEntrega === "A domicilio" && direccion) {
       bloquesDB.push(`📍 Dirección: ${direccion}`);
@@ -1512,7 +1620,7 @@
     if (notas) {
       bloquesDB.push(`📝 Notas: ${notas}`);
     }
-    bloquesDB.push(`💳 Pago: ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (paga con ${pagoCon})` : ""}`);
+    bloquesDB.push(`💳 Pago: ${detallePagoTexto}`);
 
     const detalleDB = bloquesDB.join("\n");
 
@@ -1544,7 +1652,7 @@
         mensaje += `*Coordenadas:* ${ubicacionSeleccionada.lat}, ${ubicacionSeleccionada.lng}\n`;
       }
     }
-    mensaje += `*Pago:* ${formaPago}${formaPago === "Efectivo" && pagoCon ? ` (Paga con ${pagoCon})` : ""}\n`;
+    mensaje += `*Pago:* ${detallePagoTexto}\n`;
     if (notas) mensaje += `*Notas cocina:* ${notas}\n`;
     mensaje += `==============================\n\n`;
 
