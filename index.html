@@ -1110,12 +1110,12 @@
           <div>Realiza tu transferencia con estos datos y envía tu comprobante por WhatsApp:</div>
 
           <div class="transfer-fila">
-            <span><b>Nombre:</b> <span id="transfer-titular-txt">Junior's Creperie</span></span>
+            <span><b>Nombre:</b> <span id="transfer-titular-txt">Evelin Alcantara Romero</span></span>
             <button type="button" class="btn-copiar-dato" onclick="copiarDatoTransferencia('titular')">Copiar</button>
           </div>
 
           <div class="transfer-fila">
-            <span><b>CLABE:</b> <span id="transfer-clabe-txt">000000000000000000</span></span>
+            <span><b>CLABE:</b> <span id="transfer-clabe-txt">4152 3146 8467 4297</span></span>
             <button type="button" class="btn-copiar-dato" onclick="copiarDatoTransferencia('clabe')">Copiar</button>
           </div>
 
@@ -1169,11 +1169,11 @@
   const SUPABASE_KEY = 'sb_publishable_SZWG4bLKKN9lcJi_hTRe9Q_LYOlhjse';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const TELEFONO_NEGOCIO = "7293610746";
+  const TELEFONO_NEGOCIO = "7299148122";
   const PRECIO_CREPA_SALADA = 80;
   const CLAVE_COCINA = "1234"; // <-- Cambia aquí la contraseña para entrar a cocina.html
 
-  // Datos de cuenta para transferencia 
+  // Datos de cuenta para transferencia
   const MP_TITULAR = "Evelin Alcantara Romero";
   const MP_CLABE = "4152 3146 8467 4297";
 
@@ -1190,7 +1190,7 @@
   }
 
   function copiarDatoTransferencia(tipo) {
-    const valor = tipo === 'clabe' ? MP_CLABE : MP_TITULAR;
+    const valor = tipo === 'clabe' ? MP_CLABE.replace(/\s+/g, '') : MP_TITULAR;
     const etiqueta = tipo === 'clabe' ? 'CLABE' : 'Nombre';
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(valor).catch(() => {});
