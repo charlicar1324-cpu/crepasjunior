@@ -1187,7 +1187,7 @@
           <button type="button" class="btn-gps" onclick="usarUbicacionActual(true)">🎯 Mi ubicación GPS</button>
         </div>
         <div id="mapa-entrega"></div>
-        <div class="coords-info" id="texto-coordenadas">Buscando tu ubicación exacta...</div>
+        <div class="coords-info" id="texto-coordenadas">Toca 'Mi ubicación GPS' o marca directamente tu casa en el mapa.</div>
       </div>
 
       <button type="button" class="btn btn-whatsapp" onclick="enviarWhatsApp()">📲 Enviar Pedido a Junior's Creperie</button>
@@ -1345,34 +1345,56 @@
   function usarUbicacionActual(mostrarAlerta = false) {
     if (!navigator.geolocation) {
       if (mostrarAlerta) {
-        alert("Tu navegador no soporta geolocalización. Puedes tocar el mapa para poner el pin.");
+        alert("Tu navegador no soporta geolocalización. Toca el mapa para poner el pin.");
       }
       return;
     }
-    document.getElementById('texto-coordenadas').innerText = "🎯 Obteniendo tu ubicación exacta...";
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        actualizarUbicacion(pos.coords.latitude, pos.coords.longitude, 17);
-      },
-      (err) => {
-        document.getElementById('texto-coordenadas').innerText =
-          "Ubicación no disponible. Activa la ubicación en tu dispositivo/navegador o toca el mapa.";
-        if (mostrarAlerta) {
-          if (err.code === 1) {
-            alert("Permiso denegado o ubicación desactivada en el sistema. Actívala y vuelve a intentar.");
-          } else {
-            alert("No se pudo obtener tu GPS en este momento. Toca el mapa para marcar el punto.");
-          }
+
+    const textoCoords = document.getElementById('texto-coordenadas');
+    textoCoords.innerText = "🎯 Obteniendo tu ubicación exacta...";
+
+    const onExito = (pos) => {
+      actualizarUbicacion(pos.coords.latitude, pos.coords.longitude, 17);
+    };
+
+    const onErrorFinal = (err) => {
+      textoCoords.innerText =
+        "No se pudo leer el GPS automáticamente. Toca el mapa para colocar el pin en tu domicilio.";
+      if (mostrarAlerta) {
+        if (err.code === 1) {
+          alert(
+            "El navegador tiene bloqueado el permiso de ubicación para este sitio.\n\n" +
+            "Para activarlo: toca el ícono de ajustes junto a la dirección web (arriba a la izquierda) -> Permisos -> Ubicación -> Permitir, y vuelve a tocar el botón.\n\n" +
+            "También puedes tocar directamente tu calle en el mapa."
+          );
+        } else {
+          alert("No se pudo obtener la señal GPS en este momento. Toca directamente tu calle en el mapa para poner el pin.");
         }
+      }
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      onExito,
+      (err) => {
+        if (err.code === 1) {
+          onErrorFinal(err);
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          onExito,
+          onErrorFinal,
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+        );
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
     );
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     togglePagoEfectivo();
     toggleTipoEntrega();
-    usarUbicacionActual(false);
+    document.getElementById('texto-coordenadas').innerText =
+      "Toca 'Mi ubicación GPS' o marca directamente tu casa en el mapa.";
     cargarHistorialChat();
   });
 
