@@ -797,132 +797,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-
-    /* Chatbot flotante con estética Junior's Creperie */
-    .chat-btn-flotante {
-      position: fixed;
-      bottom: 18px;
-      right: 18px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
-      color: #fffdf9;
-      border: 2.5px solid var(--texto-espresso);
-      box-shadow: 0 6px 18px rgba(43, 20, 7, 0.3);
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .chat-ventana {
-      display: none;
-      position: fixed;
-      bottom: 84px;
-      right: 18px;
-      width: min(350px, calc(100vw - 24px));
-      height: 430px;
-      background: var(--tarjeta-beige);
-      border: 2.5px solid var(--borde-canela);
-      border-radius: 16px;
-      box-shadow: 0 12px 28px rgba(43, 20, 7, 0.25);
-      z-index: 999;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .chat-ventana.abierto {
-      display: flex;
-    }
-
-    .chat-cabecera {
-      background: var(--texto-espresso);
-      color: #fef3c7;
-      padding: 10px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .chat-cerrar {
-      background: transparent;
-      color: #fef3c7;
-      border: 1px solid #d6b68a;
-      border-radius: 6px;
-      padding: 2px 7px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .chat-mensajes {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      background: #fdf6e7;
-      font-size: 0.83rem;
-    }
-
-    .burbuja {
-      padding: 7px 10px;
-      border-radius: 11px;
-      max-width: 86%;
-      line-height: 1.35;
-      overflow-wrap: break-word;
-    }
-
-    .burbuja-cliente {
-      align-self: flex-end;
-      background: var(--acento-caramelo);
-      color: #fffdf9;
-      font-weight: 600;
-    }
-
-    .burbuja-bot {
-      align-self: flex-start;
-      background: #fffdf9;
-      color: var(--texto-espresso);
-      border: 1px solid var(--borde-suave);
-    }
-
-    .burbuja-chef {
-      align-self: flex-start;
-      background: #dcfce7;
-      color: #14532d;
-      border: 1px solid #86efac;
-    }
-
-    .chat-form {
-      display: flex;
-      gap: 6px;
-      padding: 8px;
-      border-top: 1.5px solid var(--borde-suave);
-      background: var(--panel-beige);
-    }
-
-    .chat-form input {
-      margin: 0 !important;
-      padding: 8px 10px !important;
-      font-size: 0.84rem !important;
-      flex: 1;
-    }
-
-    .chat-enviar {
-      background: var(--acento-caramelo);
-      color: #fffdf9;
-      border: none;
-      border-radius: 8px;
-      padding: 0 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -1217,25 +1091,6 @@
   </div>
 </div>
 
-<!-- CHATBOT FLOTANTE -->
-<button type="button" class="chat-btn-flotante" onclick="toggleChat()" title="Asistente Junior's Creperie">💬</button>
-
-<div id="chat-ventana" class="chat-ventana">
-  <div class="chat-cabecera">
-    <span>🥞 Asistente Junior's Creperie</span>
-    <button type="button" class="chat-cerrar" onclick="toggleChat()">✕</button>
-  </div>
-  <div id="chat-mensajes" class="chat-mensajes">
-    <div class="burbuja burbuja-bot">
-      ¡Hola! Pregúntame por el menú, precios, envíos o pagos, o escríbeme tu <b>folio</b> (ej. <code>JC-104</code>) para revisar tu pedido.
-    </div>
-  </div>
-  <form class="chat-form" onsubmit="enviarMensajeChat(event)">
-    <input id="chat-input" type="text" placeholder="Escribe tu folio o pregunta..." autocomplete="off" required />
-    <button type="submit" class="chat-enviar">Enviar</button>
-  </form>
-</div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1250,12 +1105,6 @@
   const PRECIO_CREPA_SALADA = 80;
   const CLAVE_COCINA = "1234"; // <-- Cambia aquí la contraseña para entrar a cocina.html
   let carrito = [];
-
-  let sesionId = localStorage.getItem('juniors_sesion_id');
-  if (!sesionId) {
-    sesionId = 'JC-CLI-' + Math.random().toString(36).substring(2, 7).toUpperCase();
-    localStorage.setItem('juniors_sesion_id', sesionId);
-  }
 
   // ==========================================
   // ACCESO A COCINA CON CONTRASEÑA
@@ -1395,7 +1244,6 @@
     toggleTipoEntrega();
     document.getElementById('texto-coordenadas').innerText =
       "Toca 'Mi ubicación GPS' o marca directamente tu casa en el mapa.";
-    cargarHistorialChat();
   });
 
   function agregarFrappe() {
@@ -1683,7 +1531,7 @@
 
     const avisoFolio = document.getElementById('folio-aviso');
     avisoFolio.style.display = 'block';
-    avisoFolio.innerHTML = `✅ Pedido <b>${folio}</b> registrado. Escríbelo en el chat 💬 para rastrear su estado en vivo.`;
+    avisoFolio.innerHTML = `✅ Pedido <b>${folio}</b> registrado en cocina y listo para enviar por WhatsApp.`;
 
     let mensaje = `*PEDIDO JUNIOR'S CREPERIE*\n*Folio:* ${folio}\n==============================\n`;
     mensaje += `*Cliente:* ${nombre}\n`;
@@ -1710,118 +1558,6 @@
     const url = `https://wa.me/${limpio}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
   }
-
-  // ==========================================
-  // CHATBOT EN TIEMPO REAL
-  // ==========================================
-  function toggleChat() {
-    const win = document.getElementById('chat-ventana');
-    win.classList.toggle('abierto');
-    if (win.classList.contains('abierto')) {
-      document.getElementById('chat-input').focus();
-    }
-  }
-
-  function pintarBurbuja(remitente, texto) {
-    const cont = document.getElementById('chat-mensajes');
-    const div = document.createElement('div');
-    if (remitente === 'cliente') {
-      div.className = 'burbuja burbuja-cliente';
-      div.textContent = texto;
-    } else if (remitente === 'chef') {
-      div.className = 'burbuja burbuja-chef';
-      div.innerHTML = `👨‍🍳 <b>Chef:</b> ${texto}`;
-    } else {
-      div.className = 'burbuja burbuja-bot';
-      div.innerHTML = texto;
-    }
-    cont.appendChild(div);
-    cont.scrollTop = cont.scrollHeight;
-  }
-
-  async function cargarHistorialChat() {
-    const { data } = await supabaseClient
-      .from('mensajes_chat')
-      .select('*')
-      .eq('sesion_id', sesionId)
-      .order('creado_en', { ascending: true });
-
-    if (data && data.length > 0) {
-      data.forEach(m => pintarBurbuja(m.remitente, m.mensaje));
-    }
-  }
-
-  async function responderBot(msg) {
-    const textoUpper = msg.toUpperCase();
-    const folioMatch = textoUpper.match(/JC-\d+/);
-
-    if (folioMatch) {
-      const folioBuscado = folioMatch[0];
-      const { data } = await supabaseClient
-        .from('pedidos')
-        .select('*')
-        .eq('folio', folioBuscado)
-        .single();
-
-      if (data) {
-        return `📦 Folio <b>${data.folio}</b> (${data.cliente_nombre})<br>Estado actual: <b>${data.estado}</b><br>Total: <b>$${data.total}</b>`;
-      }
-      return `No encontré ningún pedido con el folio <b>${folioBuscado}</b>. Revisa que esté bien escrito.`;
-    }
-
-    if (textoUpper.includes('PRECIO') || textoUpper.includes('MENU') || textoUpper.includes('MENÚ') || textoUpper.includes('CREPA') || textoUpper.includes('FRAPPE') || textoUpper.includes('FRAPPÉ')) {
-      return 'Frappés desde <b>$75</b>, crepas dulces desde <b>$70</b> (sencilla) / <b>$80</b> (combinada), crepas saladas <b>$80</b>, Bowl Crepa <b>$75</b> y Waffle desde <b>$55</b>.';
-    }
-
-    if (textoUpper.includes('ENVIO') || textoUpper.includes('ENVÍO') || textoUpper.includes('DOMICILIO') || textoUpper.includes('ENTREGA')) {
-      return 'Hacemos <b>envío a domicilio</b> (puedes marcar tu ubicación en el mapa) y también <b>recolección física en el puesto</b>.';
-    }
-
-    if (textoUpper.includes('PAGO') || textoUpper.includes('EFECTIVO') || textoUpper.includes('TRANSFERENCIA')) {
-      return 'Aceptamos <b>efectivo</b> y <b>transferencia</b>. Si pagas en efectivo, puedes indicar con cuánto pagas en el carrito.';
-    }
-
-    return 'Mensaje recibido. Si necesitas algo en especial, el chef te responderá por aquí mismo en cuanto lo vea.';
-  }
-
-  async function enviarMensajeChat(e) {
-    e.preventDefault();
-    const input = document.getElementById('chat-input');
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-
-    const nombreCliente = document.getElementById('cliente-nombre').value.trim() || 'Visitante';
-
-    await supabaseClient.from('mensajes_chat').insert([{
-      sesion_id: sesionId,
-      cliente_nombre: nombreCliente,
-      remitente: 'cliente',
-      mensaje: msg
-    }]);
-
-    const respuesta = await responderBot(msg);
-    if (respuesta) {
-      await supabaseClient.from('mensajes_chat').insert([{
-        sesion_id: sesionId,
-        cliente_nombre: nombreCliente,
-        remitente: 'bot',
-        mensaje: respuesta
-      }]);
-    }
-  }
-
-  supabaseClient
-    .channel('juniors-chat-' + sesionId)
-    .on('postgres_changes', {
-      event: 'INSERT',
-      schema: 'public',
-      table: 'mensajes_chat',
-      filter: `sesion_id=eq.${sesionId}`
-    }, payload => {
-      pintarBurbuja(payload.new.remitente, payload.new.mensaje);
-    })
-    .subscribe();
 </script>
 
 </body>
